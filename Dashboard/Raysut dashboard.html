@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1920" />
+<title>Site Dashboard — Raysut · Al Mughsayl · MPR 16 (static)</title>
+
+<!-- VIA International design tokens + Sansation brand font (readable CSS, editable) -->
+<link rel="stylesheet" href="via/colors_and_type.css" />
+<!-- Tabular figures -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* =========================================================
+     Site Progress Dashboard — plain HTML/CSS build
+     Fixed 1920x1080 canvas, auto-scaled to the viewport.
+     All colours & type come from the VIA design tokens.
+     ========================================================= */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #061320; }
+  body { font-family: var(--font-brand); color: var(--ink-900); -webkit-font-smoothing: antialiased; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Letterbox stage */
+  .stage-wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .stage { width: 1920px; height: 1080px; background: var(--ink-50); flex-shrink: 0;
+           transform-origin: center center; box-shadow: 0 20px 80px rgba(0,0,0,.5); position: relative; overflow: hidden; }
+
+  .board { width: 1920px; height: 1080px; padding: 20px 28px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* ---- overline helper ---- */
+  .over { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); }
+
+  /* ---- header ---- */
+  .head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 22px;
+          padding: 2px 4px 12px; border-bottom: 2px solid var(--via-blue); }
+  .logo-ph { height: 46px; width: 132px; border: 1.5px dashed var(--ink-300); border-radius: var(--r-md);
+             display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--ink-400); background: var(--white); }
+  .logo-ph .dots { display: inline-flex; gap: 3px; }
+  .logo-ph .dots i { width: 7px; height: 7px; border-radius: var(--r-pill); display: block; }
+  .head .client { padding-left: 14px; border-left: 1px solid var(--border-1); }
+  .head .center { padding-left: 16px; border-left: 1px solid var(--border-1); }
+  .head h1 { font: var(--text-h2); font-size: 23px; letter-spacing: var(--tracking-tight); line-height: 1.05; margin: 0; }
+  .muted { color: var(--ink-500); }
+  .blue { color: var(--via-blue); }
+
+  /* status pill */
+  .pill { display: inline-flex; flex-direction: column; align-items: center; gap: 5px;
+          padding: 9px 16px; border-radius: var(--r-md); border: 1px solid var(--success-border); background: var(--success-bg); }
+  .pill .row { display: flex; align-items: center; gap: 8px; }
+  .pill .led { width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--via-green); box-shadow: 0 0 0 3px rgba(0,146,60,.15); }
+
+  /* ---- KPI cards ---- */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .kpi { padding: 13px 16px 14px; background: var(--white); border: 1px solid var(--border-1);
+         border-radius: var(--r-lg); box-shadow: var(--shadow-sm); height: 96px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kpi .big { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 31px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+  .kpi .big .suf { font-size: 15px; margin-left: 1px; color: var(--ink-500); }
+  .kpi .ref { font: var(--text-caption); color: var(--ink-500); }
+  .kpi .delta { font-family: var(--font-mono); font-size: 10px; font-weight: 700; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  .kpi .prog { margin-top: 5px; height: 4px; background: var(--ink-100); border-radius: var(--r-pill); position: relative; overflow: hidden; }
+  .kpi .prog > i { position: absolute; inset: 0; background: var(--via-blue); border-radius: var(--r-pill); display: block; }
+
+  .ring { flex-shrink: 0; }
+  .cmp { display: flex; gap: 3px; align-items: flex-end; height: 22px; }
+  .cmp b { width: 10px; display: block; }
+  .cmp .lbl { font-family: var(--font-mono); font-size: 7px; color: var(--ink-500); text-align: center; display: block; }
+
+  /* ---- main grid ---- */
+  .grid { flex: 1; display: grid; grid-template-columns: 820px 1fr 440px; gap: 12px; min-height: 0; }
+  .col { display: grid; gap: 12px; min-height: 0; }
+  .col.a { grid-template-rows: 300px 1fr; }
+  .col.b { grid-template-rows: 300px 1fr; }
+  .col.c { grid-template-rows: repeat(5, 1fr); }
+
+  /* ---- panel ---- */
+  .panel { background: var(--white); border: 1px solid var(--border-1); border-radius: var(--r-md);
+           box-shadow: var(--shadow-sm); padding: 13px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline;
+                border-bottom: 1px solid var(--border-1); padding-bottom: 7px; margin-bottom: 9px; gap: 8px; }
+  .panel-head .t { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--via-blue); font-size: 11px; white-space: nowrap; }
+  .panel-head .s { font: var(--text-caption); font-size: 10.5px; color: var(--ink-500); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .panel-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+  /* ---- S-curve ---- */
+  .sc-readouts { display: flex; gap: 18px; margin-bottom: 4px; }
+  .ro .ro-l { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8.5px; color: var(--ink-500); margin-bottom: 2px; }
+  .ro .ro-v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 17px; font-weight: 600; line-height: 1; }
+  .toggle { display: inline-flex; border: 1px solid var(--border-1); border-radius: var(--r-pill); padding: 2px; gap: 2px; }
+  .toggle button { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 9px;
+                   padding: 3px 10px; border: 0; border-radius: var(--r-pill); background: transparent; color: var(--ink-600); cursor: pointer; }
+  .toggle button.on { background: var(--via-blue); color: var(--white); }
+  .sc-wrap { flex: 1; min-height: 0; position: relative; }
+  .sc-wrap svg { width: 100%; height: 100%; display: block; }
+  .sc-wrap svg text.ax { font-family: var(--font-mono); font-size: 8px; fill: var(--ink-500); }
+  .sc-wrap svg text.axnow { font-family: var(--font-mono); font-size: 8px; fill: var(--via-red); font-weight: 600; }
+  .sc-wrap svg text.yr { font-family: var(--font-brand); font-weight: 700; font-size: 10px; fill: var(--ink-900); letter-spacing: .14em; }
+  .sc-legend { display: flex; gap: 16px; align-items: center; margin-top: 4px; }
+  .sc-legend span { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9px; color: var(--ink-700); }
+  .sc-legend i { display: block; width: 16px; height: 0; }
+
+  /* ---- activities ---- */
+  .act-head, .act-row { display: grid; grid-template-columns: minmax(160px,200px) 1fr 50px 56px 56px; gap: 10px; align-items: center; }
+  .act-head { padding-bottom: 4px; border-bottom: 1px solid var(--border-1); }
+  .act-head div { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 9px; color: var(--ink-500); }
+  .act-head .r { text-align: right; }
+  .act-list { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .act-row { flex: 1; border-bottom: 1px dotted var(--border-1); }
+  .act-row:last-child { border-bottom: 0; }
+  .act-name { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .act-bar { position: relative; height: 14px; }
+  .act-bar .tick { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--ink-200); }
+  .act-bar .tick[style*="left:0"] { background: var(--ink-300); }
+  .act-bar .bar-plan { position: absolute; left: 0; top: 1px; height: 12px; background: var(--ink-300); }
+  .act-bar .bar-actual { position: absolute; left: 0; top: 4px; height: 6px; background: var(--via-blue); }
+  .num { font-size: 10px; text-align: right; }
+  .num.muted { color: var(--ink-500); }
+  .num.strong { font-weight: 700; }
+
+  /* ---- map ---- */
+  .map { position: relative; flex: 1; min-height: 0; border: 1px solid var(--border-1); border-radius: var(--r-sm);
+         overflow: hidden; background: linear-gradient(160deg, var(--blue-50), var(--ink-100)); }
+  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .map-legend { position: absolute; left: 8px; top: 8px; background: var(--white); border: 1px solid var(--border-1);
+                border-radius: var(--r-sm); padding: 6px 9px; box-shadow: var(--shadow-xs); }
+  .map-legend .lr { display: flex; align-items: center; gap: 6px; padding: 1px 0; font-family: var(--font-mono); font-size: 9px; color: var(--ink-900); }
+
+  /* ---- photos ---- */
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+  .photo { text-align: left; cursor: zoom-in; display: flex; flex-direction: column; min-height: 0; border: 0; background: none; padding: 0; }
+  .photo-ph { flex: 1; min-height: 0; position: relative; border-radius: var(--r-sm); border: 1px solid var(--border-1);
+              background: linear-gradient(135deg, var(--blue-50), var(--ink-100)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .photo-ph-lbl { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8px; color: var(--ink-400); }
+  .photo-cap { margin-top: 4px; display: flex; align-items: baseline; gap: 6px; }
+  .photo-idx { font-size: 8px; color: var(--ink-500); text-transform: uppercase; letter-spacing: .1em; }
+  .photo-title { font-size: 10px; font-weight: 700; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---- resources ---- */
+  .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
+  .res { display: flex; flex-direction: column; gap: 4px; }
+  .res .rl { font-size: 11px; font-weight: 700; }
+  .res .rs { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); }
+  .res .rv { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 600; line-height: 1; margin-top: 2px; }
+  .res .track { position: relative; height: 8px; background: var(--ink-100); }
+  .res .track .p { position: absolute; top: 0; bottom: 0; background: var(--ink-300); }
+  .res .track .a { position: absolute; top: 2px; bottom: 2px; background: var(--via-blue); }
+  .res .track .mark { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ink-800); }
+  .res .rf { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); display: flex; justify-content: space-between; }
+
+  /* ---- scope + pavement ---- */
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; row-gap: 4px; margin-bottom: 6px; }
+  .scope-item { display: flex; align-items: baseline; gap: 4px; }
+  .scope-v { font-size: 14px; font-weight: 700; }
+  .scope-u { font-size: 8px; color: var(--ink-500); margin-left: 3px; }
+  .scope-l { font-size: 9px; color: var(--ink-700); margin-left: auto; text-align: right; }
+  .pav-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .pav-stack { flex: 1; display: flex; flex-direction: column; border: 1px solid var(--ink-800); min-height: 0; }
+  .pav { min-height: 12px; color: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 8px; font-family: var(--font-mono); font-size: 9px; }
+  .pav-code { font-weight: 700; }
+  .pav-name { opacity: .85; font-size: 8px; }
+
+  /* ---- trades ---- */
+  .trade-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; }
+  .trade { display: flex; align-items: center; gap: 6px; padding: 2px 0; border-bottom: 1px dotted var(--border-1); font-size: 10px; }
+  .trade .dot { width: 7px; height: 7px; border-radius: var(--r-pill); flex-shrink: 0; }
+  .trade-key { display: flex; gap: 8px; margin-top: 2px; }
+  .trade-key span { display: flex; align-items: center; gap: 3px; font-family: var(--font-mono); font-size: 8px; color: var(--ink-500); }
+  .trade-key i { width: 6px; height: 6px; border-radius: var(--r-pill); display: block; }
+
+  /* ---- timeline ---- */
+  .tl { position: relative; height: 32px; margin-top: 14px; }
+  .tl .line { position: absolute; left: 0; right: 0; top: 16px; height: 2px; background: var(--ink-200); }
+  .tl .done { position: absolute; left: 0; top: 16px; height: 2px; background: var(--via-blue); }
+  .tl .node { position: absolute; top: 11px; width: 10px; height: 10px; border-radius: var(--r-pill); }
+  .tl-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+  .tl-labels .d { font-family: var(--font-mono); font-size: 8px; color: var(--ink-500); text-transform: uppercase; letter-spacing: .12em; }
+  .tl-labels .l { font-size: 10px; font-weight: 700; }
+  .tl-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border-1); }
+  .tl-stats .sl { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8px; color: var(--ink-500); }
+  .tl-stats .sv { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 16px; font-weight: 600; line-height: 1.1; }
+  .tl-stats .sv .u { font-size: 9px; color: var(--ink-500); margin-left: 2px; }
+
+  /* ---- parties ---- */
+  .party { padding: 3px 0; border-bottom: 1px dotted var(--border-1); }
+  .party .r { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8px; color: var(--ink-500); }
+  .party .n { font-size: 11px; font-weight: 700; line-height: 1.15; }
+  .party .sub { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); line-height: 1.2; }
+
+  /* ---- footer ---- */
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 0; border-top: 1px solid var(--border-1); font-size: 10px; color: var(--ink-500); }
+  .foot .brand { display: flex; align-items: center; gap: 7px; }
+  .foot .brand .dots { display: inline-flex; gap: 3px; }
+  .foot .brand .dots i { width: 6px; height: 6px; border-radius: var(--r-pill); display: block; }
+  .foot .brand .txt { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--via-blue); }
+
+  /* ---- lightbox ---- */
+  .lightbox { position: fixed; inset: 0; background: rgba(2,26,46,.88); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .lightbox.open { display: flex; }
+  .lb-inner { width: min(1400px, 86%); }
+  .lb-photo { aspect-ratio: 16/9; background: var(--blue-100); border: 1px solid var(--blue-300); border-radius: var(--r-md);
+              display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .lb-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; color: var(--white); }
+  .lb-bar .idx { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 10px; color: var(--fg-on-blue-dim); }
+  .lb-bar .title { font: var(--text-h3); color: var(--white); margin-top: 4px; }
+  .lb-bar .sub { font-size: 13px; color: var(--fg-on-blue-dim); margin-top: 4px; }
+  .lb-bar button { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 11px;
+                   padding: 9px 16px; border-radius: var(--r-md); border: 1px solid rgba(255,255,255,.35); background: transparent; color: var(--white); cursor: pointer; }
+  .lb-bar button.primary { background: var(--via-blue); border-color: var(--via-blue); box-shadow: var(--shadow-blue); }
+</style>
+</head>
+<body>
+<div class="stage-wrap"><div class="stage" id="stage">
+  <div class="board">
+
+    <!-- ============ HEADER ============ -->
+    <header class="head">
+      <div style="display:flex;gap:14px;align-items:center">
+        <!-- VIA Logo image -->
+        <div class="logo-ph" style="border:none; background:transparent;">
+          <img src="via/logo-color.png" alt="VIA Logo" style="height:34px; width:auto; display:block;">
+        </div>
+        <div class="client">
+          <div class="over muted" style="font-size:8.5px">Client</div>
+          <div style="font-size:11.5px;font-weight:700;line-height:1.15">Ministry of Transport &amp; Communications</div>
+          <div class="muted" style="font-size:9.5px;line-height:1.2">Directorate General of Roads &amp; Land Transport</div>
+        </div>
+      </div>
+
+      <div class="center">
+        <div class="over blue" style="font-size:9px;margin-bottom:2px">Project Nº DGRLT/DHO/2024/47 &nbsp;·&nbsp; Highway dualization</div>
+        <h1>Construction of Dualization for Raysut – Al Mughsayl Asphalt Road</h1>
+        <div class="muted" style="font-size:11.5px;margin-top:2px">Governorate of Dhofar, Sultanate of Oman</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="text-align:right">
+          <div class="over muted" style="font-size:8.5px">Monthly Progress Report</div>
+          <div class="mono" style="font-size:16px;font-weight:600;line-height:1.2;color:var(--ink-900)">Nº 16 · June 2026</div>
+          <div class="over muted" style="font-size:8px">data as of 30 June 2026</div>
+        </div>
+        <div class="pill" style="border-color:var(--danger-border);background:var(--danger-bg)">
+          <div class="row"><span class="led" style="background:var(--via-red);box-shadow:0 0 0 3px rgba(227,36,32,.15)"></span><span class="over" style="font-size:11px;color:var(--via-red)">BEHIND SCHEDULE</span></div>
+          <span class="mono" style="font-size:16px;font-weight:600;color:var(--ink-900)">-4.98% vs plan</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ KPI STRIP ============ -->
+    <section class="kpis">
+      <div class="kpi">
+        <div class="over" style="font-size:9.5px;color:var(--ink-600)">Physical progress</div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px">
+          <div class="big">39.25<span class="suf">%</span></div>
+          <svg class="ring" width="36" height="36" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="14" fill="none" stroke="var(--ink-200)" stroke-width="2"/>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="var(--ink-300)" stroke-width="2" stroke-dasharray="88.0" stroke-dashoffset="49.1" transform="rotate(-90 18 18)"/>
+            <circle cx="18" cy="18" r="11" fill="none" stroke="var(--via-blue)" stroke-width="2" stroke-dasharray="69.1" stroke-dashoffset="42.0" transform="rotate(-90 18 18)"/>
+          </svg>
+        </div>
+        <div><div class="ref">Planned 44.23%</div><div class="prog"><i style="width:39.25%"></i></div></div>
+      </div>
+
+      <div class="kpi">
+        <div class="over" style="font-size:9.5px;color:var(--ink-600)">Schedule variance</div>
+        <div class="big" style="color:var(--via-red)">-4.98<span class="suf">%</span></div>
+        <div>
+          <div class="ref">Behind plan</div>
+          <div class="delta" style="color:var(--via-red)"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l6 6 4-4 8 8"/><path d="M17 17h4v-4"/></svg>-2.59% this month</div>
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="over" style="font-size:9.5px;color:var(--ink-600)">Time elapsed</div>
+        <div class="big">53.30<span class="suf">%</span></div>
+        <div><div class="ref">486 of 912 days</div><div class="prog"><i style="width:53.30%"></i></div></div>
+      </div>
+
+      <div class="kpi">
+        <div class="over" style="font-size:9.5px;color:var(--ink-600)">Financial progress</div>
+        <div class="big">31.69<span class="suf">%</span></div>
+        <div><div class="ref">10,073,480 / 34,844,452 R.O.</div><div class="prog"><i style="width:31.69%"></i></div></div>
+      </div>
+
+      <div class="kpi">
+        <div class="over" style="font-size:9.5px;color:var(--ink-600)">This month</div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px">
+          <div class="big">1.29<span class="suf">%</span></div>
+          <div class="cmp">
+            <div><b style="height:17px;background:var(--ink-300)"></b><span class="lbl">P</span></div>
+            <div><b style="height:6px;background:var(--via-blue)"></b><span class="lbl">A</span></div>
+          </div>
+        </div>
+        <div class="ref">Planned 3.88%</div>
+      </div>
+    </section>
+
+    <!-- ============ MAIN GRID ============ -->
+    <div class="grid">
+
+      <!-- COLUMN 1 : S-curve + activities -->
+      <div class="col a">
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Cumulative progress · S-curve</div>
+              <div class="s">planned vs achieved · rev-01 programme</div>
+            </div>
+            <div class="toggle">
+              <button id="tg-cum" class="on" onclick="setMode('cum')">Cum.</button>
+              <button id="tg-mon" onclick="setMode('mon')">Mo.</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="sc-readouts">
+              <div class="ro"><div class="ro-l">Achieved</div><div class="ro-v" style="color:var(--via-blue)">39.25%</div></div>
+              <div class="ro"><div class="ro-l">Planned</div><div class="ro-v muted">44.23%</div></div>
+              <div class="ro"><div class="ro-l">Variance</div><div class="ro-v" style="color:var(--via-red)">-4.98%</div></div>
+            </div>
+            <div class="sc-wrap">
+              <svg id="sc-cum" viewBox="0 0 800 220" preserveAspectRatio="none"><line x1="44" x2="778" y1="182.0" y2="182.0" stroke="var(--ink-200)"  /><text x="39" y="185.0" text-anchor="end" class="ax">0%</text><line x1="44" x2="778" y1="141.0" y2="141.0" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="144.0" text-anchor="end" class="ax">25%</text><line x1="44" x2="778" y1="100.0" y2="100.0" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="103.0" text-anchor="end" class="ax">50%</text><line x1="44" x2="778" y1="59.0" y2="59.0" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="62.0" text-anchor="end" class="ax">75%</text><line x1="44" x2="778" y1="18.0" y2="18.0" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="21.0" text-anchor="end" class="ax">100%</text><line x1="300.9" x2="300.9" y1="18" y2="182" stroke="var(--ink-200)" /><line x1="594.5" x2="594.5" y1="18" y2="182" stroke="var(--ink-200)" /><text x="166.3" y="12" text-anchor="middle" class="yr">2025</text><text x="447.7" y="12" text-anchor="middle" class="yr">2026</text><text x="692.4" y="12" text-anchor="middle" class="yr">2027</text><polygon points="44.0,182.0 44.0,181.9 68.5,181.3 92.9,180.6 117.4,178.5 141.9,175.6 166.3,171.7 190.8,167.6 215.3,162.8 239.7,157.7 264.2,152.1 288.7,146.3 313.1,140.1 337.6,134.1 362.1,128.0 386.5,122.1 411.0,115.8 435.5,109.5 459.9,103.4 484.4,97.0 508.9,90.5 533.3,83.7 557.8,76.9 582.3,70.5 606.7,63.6 631.2,56.4 655.7,49.2 680.1,43.1 704.6,36.7 729.1,30.0 753.5,23.3 778.0,18.0 778.0,182.0" fill="var(--ink-300)" opacity="0.28" /><polyline points="44.0,181.9 68.5,181.3 92.9,180.6 117.4,178.5 141.9,175.6 166.3,171.7 190.8,167.6 215.3,162.8 239.7,157.7 264.2,152.1 288.7,146.3 313.1,140.1 337.6,134.1 362.1,128.0 386.5,122.1 411.0,115.8 435.5,109.5 459.9,103.4 484.4,97.0 508.9,90.5 533.3,83.7 557.8,76.9 582.3,70.5 606.7,63.6 631.2,56.4 655.7,49.2 680.1,43.1 704.6,36.7 729.1,30.0 753.5,23.3 778.0,18.0" fill="none" stroke="var(--ink-700)" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.75" /><polygon points="44.0,182.0 44.0,181.9 68.5,181.3 92.9,180.4 117.4,178.3 141.9,175.3 166.3,171.5 190.8,165.8 215.3,160.8 239.7,157.7 264.2,152.1 288.7,146.2 313.1,140.0 337.6,134.0 362.1,128.0 386.5,123.9 411.0,119.7 435.5,117.6 435.5,182.0" fill="var(--via-blue)" opacity="0.10" /><polyline points="44.0,181.9 68.5,181.3 92.9,180.4 117.4,178.3 141.9,175.3 166.3,171.5 190.8,165.8 215.3,160.8 239.7,157.7 264.2,152.1 288.7,146.2 313.1,140.0 337.6,134.0 362.1,128.0 386.5,123.9 411.0,119.7 435.5,117.6" fill="none" stroke="var(--via-blue)" stroke-width="2.2" /><line x1="435.5" x2="435.5" y1="18" y2="182" stroke="var(--via-red)" stroke-width="1" stroke-dasharray="2 3" /><circle cx="435.5" cy="109.5" r="2.8" fill="var(--ink-800)" /><circle cx="435.5" cy="117.6" r="4" fill="var(--white)" stroke="var(--via-blue)" stroke-width="2" /><text x="44.0" y="194" text-anchor="middle" class="ax">Feb-25</text><text x="92.9" y="194" text-anchor="middle" class="ax">Apr-25</text><text x="141.9" y="194" text-anchor="middle" class="ax">Jun-25</text><text x="190.8" y="194" text-anchor="middle" class="ax">Aug-25</text><text x="239.7" y="194" text-anchor="middle" class="ax">Oct-25</text><text x="288.7" y="194" text-anchor="middle" class="ax">Dec-25</text><text x="337.6" y="194" text-anchor="middle" class="ax">Feb-26</text><text x="386.5" y="194" text-anchor="middle" class="ax">Apr-26</text><text x="435.5" y="194" text-anchor="middle" class="ax axnow">Jun-26</text><text x="484.4" y="194" text-anchor="middle" class="ax">Aug-26</text><text x="533.3" y="194" text-anchor="middle" class="ax">Oct-26</text><text x="582.3" y="194" text-anchor="middle" class="ax">Dec-26</text><text x="631.2" y="194" text-anchor="middle" class="ax">Feb-27</text><text x="680.1" y="194" text-anchor="middle" class="ax">Apr-27</text><text x="729.1" y="194" text-anchor="middle" class="ax">Jun-27</text><text x="778.0" y="194" text-anchor="middle" class="ax">Aug-27</text></svg>
+              <svg id="sc-mon" viewBox="0 0 800 220" preserveAspectRatio="none" style="display:none"><line x1="44" x2="778" y1="182.0" y2="182.0" stroke="var(--ink-200)"  /><text x="39" y="185.0" text-anchor="end" class="ax">0%</text><line x1="44" x2="778" y1="149.2" y2="149.2" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="152.2" text-anchor="end" class="ax">1%</text><line x1="44" x2="778" y1="116.4" y2="116.4" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="119.4" text-anchor="end" class="ax">2%</text><line x1="44" x2="778" y1="83.6" y2="83.6" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="86.6" text-anchor="end" class="ax">3%</text><line x1="44" x2="778" y1="50.8" y2="50.8" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="53.8" text-anchor="end" class="ax">4%</text><line x1="44" x2="778" y1="18.0" y2="18.0" stroke="var(--ink-200)" stroke-dasharray="2 3" /><text x="39" y="21.0" text-anchor="end" class="ax">5%</text><line x1="300.9" x2="300.9" y1="18" y2="182" stroke="var(--ink-200)" /><line x1="594.5" x2="594.5" y1="18" y2="182" stroke="var(--ink-200)" /><text x="166.3" y="12" text-anchor="middle" class="yr">2025</text><text x="447.7" y="12" text-anchor="middle" class="yr">2026</text><text x="692.4" y="12" text-anchor="middle" class="yr">2027</text><polygon points="44.0,182.0 44.0,179.8 68.5,170.2 92.9,167.3 117.4,141.7 141.9,122.6 166.3,105.1 190.8,99.3 215.3,85.4 239.7,81.2 264.2,69.5 288.7,65.5 313.1,58.6 337.6,61.5 362.1,61.4 386.5,64.0 411.0,55.8 435.5,54.7 459.9,60.1 484.4,54.4 508.9,51.7 533.3,47.1 557.8,46.0 582.3,52.5 606.7,44.4 631.2,39.0 655.7,37.2 680.1,61.2 704.6,52.5 729.1,47.9 753.5,49.2 778.0,75.5 778.0,182.0" fill="var(--ink-300)" opacity="0.28" /><polyline points="44.0,179.8 68.5,170.2 92.9,167.3 117.4,141.7 141.9,122.6 166.3,105.1 190.8,99.3 215.3,85.4 239.7,81.2 264.2,69.5 288.7,65.5 313.1,58.6 337.6,61.5 362.1,61.4 386.5,64.0 411.0,55.8 435.5,54.7 459.9,60.1 484.4,54.4 508.9,51.7 533.3,47.1 557.8,46.0 582.3,52.5 606.7,44.4 631.2,39.0 655.7,37.2 680.1,61.2 704.6,52.5 729.1,47.9 753.5,49.2 778.0,75.5" fill="none" stroke="var(--ink-700)" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.75" /><polygon points="44.0,182.0 44.0,179.8 68.5,169.5 92.9,164.9 117.4,139.5 141.9,122.6 166.3,104.9 190.8,67.9 215.3,82.0 239.7,119.7 264.2,69.5 288.7,64.2 313.1,58.7 337.6,61.0 362.1,62.9 386.5,99.3 411.0,99.7 435.5,139.7 435.5,182.0" fill="var(--via-blue)" opacity="0.10" /><polyline points="44.0,179.8 68.5,169.5 92.9,164.9 117.4,139.5 141.9,122.6 166.3,104.9 190.8,67.9 215.3,82.0 239.7,119.7 264.2,69.5 288.7,64.2 313.1,58.7 337.6,61.0 362.1,62.9 386.5,99.3 411.0,99.7 435.5,139.7" fill="none" stroke="var(--via-blue)" stroke-width="2.2" /><line x1="435.5" x2="435.5" y1="18" y2="182" stroke="var(--via-red)" stroke-width="1" stroke-dasharray="2 3" /><circle cx="435.5" cy="54.7" r="2.8" fill="var(--ink-800)" /><circle cx="435.5" cy="139.7" r="4" fill="var(--white)" stroke="var(--via-blue)" stroke-width="2" /><text x="44.0" y="194" text-anchor="middle" class="ax">Feb-25</text><text x="92.9" y="194" text-anchor="middle" class="ax">Apr-25</text><text x="141.9" y="194" text-anchor="middle" class="ax">Jun-25</text><text x="190.8" y="194" text-anchor="middle" class="ax">Aug-25</text><text x="239.7" y="194" text-anchor="middle" class="ax">Oct-25</text><text x="288.7" y="194" text-anchor="middle" class="ax">Dec-25</text><text x="337.6" y="194" text-anchor="middle" class="ax">Feb-26</text><text x="386.5" y="194" text-anchor="middle" class="ax">Apr-26</text><text x="435.5" y="194" text-anchor="middle" class="ax axnow">Jun-26</text><text x="484.4" y="194" text-anchor="middle" class="ax">Aug-26</text><text x="533.3" y="194" text-anchor="middle" class="ax">Oct-26</text><text x="582.3" y="194" text-anchor="middle" class="ax">Dec-26</text><text x="631.2" y="194" text-anchor="middle" class="ax">Feb-27</text><text x="680.1" y="194" text-anchor="middle" class="ax">Apr-27</text><text x="729.1" y="194" text-anchor="middle" class="ax">Jun-27</text><text x="778.0" y="194" text-anchor="middle" class="ax">Aug-27</text></svg>
+            </div>
+            <div class="sc-legend">
+              <span><i style="border-top:1.2px dashed var(--ink-700)"></i>Planned</span>
+              <span><i style="border-top:2.2px solid var(--via-blue)"></i>Achieved</span>
+              <span><i style="border-top:1px dashed var(--via-red);width:14px"></i>Reporting date (Jun-26)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Physical progress of major activities</div>
+              <div class="s">cumulative as of 30 June 2026</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="act-head">
+              <div>Activity</div><div>Progress (0–100%)</div><div class="r">Plan</div><div class="r">Actual</div><div class="r">Δ</div>
+            </div>
+            <div class="act-list">
+      <div class="act-row">
+        <div class="act-name">Mobilization</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:60%"></span>
+          <span class="bar-actual" style="width:60%"></span>
+        </div>
+        <div class="mono num muted">60.00</div>
+        <div class="mono num strong">60.00</div>
+        <div class="mono num" style="color:var(--ink-500);font-weight:700">0.00</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Unclassified Excavation</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:58.02%"></span>
+          <span class="bar-actual" style="width:70.31%"></span>
+        </div>
+        <div class="mono num muted">58.02</div>
+        <div class="mono num strong">70.31</div>
+        <div class="mono num" style="color:var(--via-green);font-weight:700">+12.28</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Unclassified Str. Excavation</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:94.47%"></span>
+          <span class="bar-actual" style="width:96.30%"></span>
+        </div>
+        <div class="mono num muted">94.47</div>
+        <div class="mono num strong">96.30</div>
+        <div class="mono num" style="color:var(--via-green);font-weight:700">+1.83</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">GSB (Class-B)</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:38.25%"></span>
+          <span class="bar-actual" style="width:28.63%"></span>
+        </div>
+        <div class="mono num muted">38.25</div>
+        <div class="mono num strong">28.63</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-9.63</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">ABC (Class-B)</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:40.21%"></span>
+          <span class="bar-actual" style="width:24.50%"></span>
+        </div>
+        <div class="mono num muted">40.21</div>
+        <div class="mono num strong">24.50</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-15.71</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Bit. Base Course (Class-B)</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:39.29%"></span>
+          <span class="bar-actual" style="width:16.47%"></span>
+        </div>
+        <div class="mono num muted">39.29</div>
+        <div class="mono num strong">16.47</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-22.83</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Bit. Wearing (Class-B)</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:33.54%"></span>
+          <span class="bar-actual" style="width:0%"></span>
+        </div>
+        <div class="mono num muted">33.54</div>
+        <div class="mono num strong">0.00</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-33.54</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Concrete C-15</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:71.17%"></span>
+          <span class="bar-actual" style="width:61.93%"></span>
+        </div>
+        <div class="mono num muted">71.17</div>
+        <div class="mono num strong">61.93</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-9.24</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Concrete C-35</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:58.95%"></span>
+          <span class="bar-actual" style="width:52.41%"></span>
+        </div>
+        <div class="mono num muted">58.95</div>
+        <div class="mono num strong">52.41</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-6.55</div>
+      </div>
+      <div class="act-row">
+        <div class="act-name">Steel (any dia.)</div>
+        <div class="act-bar">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>
+          <span class="bar-plan" style="width:61.29%"></span>
+          <span class="bar-actual" style="width:52.20%"></span>
+        </div>
+        <div class="mono num muted">61.29</div>
+        <div class="mono num strong">52.20</div>
+        <div class="mono num" style="color:var(--via-red);font-weight:700">-9.09</div>
+      </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2 : map + photos -->
+      <div class="col b">
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Project layout</div><div class="s">schematic alignment · NTS</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="map">
+              <svg viewBox="0 0 800 300" preserveAspectRatio="xMidYMid slice">
+                <!-- sea -->
+                <rect x="0" y="210" width="800" height="90" fill="var(--blue-200)" opacity="0.6"/>
+                <!-- road: existing + dualization + completed -->
+                <path d="M 60 200 C 180 190, 280 205, 380 192 S 580 202, 720 190" fill="none" stroke="var(--white)" stroke-width="14"/>
+                <path d="M 60 200 C 180 190, 280 205, 380 192 S 580 202, 720 190" fill="none" stroke="var(--via-red)" stroke-width="4" stroke-dasharray="6 4"/>
+                <path d="M 60 200 C 140 190, 220 195, 319 195" fill="none" stroke="var(--via-blue)" stroke-width="6"/>
+                <!-- bypass -->
+                <path d="M 200 195 L 250 140 L 320 122" fill="none" stroke="var(--via-red)" stroke-width="3" stroke-dasharray="4 3"/>
+                <!-- endpoints -->
+                <circle cx="60" cy="200" r="5" fill="var(--ink-900)" stroke="var(--white)" stroke-width="2"/>
+                <text x="68" y="188" class="mono" font-size="11" font-weight="700" fill="var(--ink-900)" font-family="var(--font-brand)" letter-spacing="0.1em">RAYSUT</text>
+                <text x="68" y="200" font-size="8" fill="var(--ink-500)" font-family="var(--font-mono)">Ch. 0+000</text>
+                <circle cx="720" cy="190" r="5" fill="var(--ink-900)" stroke="var(--white)" stroke-width="2"/>
+                <text x="712" y="178" text-anchor="end" font-size="11" font-weight="700" fill="var(--ink-900)" font-family="var(--font-brand)" letter-spacing="0.1em">AL MUGHSAYL</text>
+                <text x="712" y="190" text-anchor="end" font-size="8" fill="var(--ink-500)" font-family="var(--font-mono)">Ch. 27+372</text>
+                <circle cx="320" cy="122" r="3.5" fill="var(--ink-900)" stroke="var(--white)" stroke-width="2"/>
+                <text x="313" y="116" text-anchor="end" font-size="9" font-weight="700" fill="var(--ink-900)" font-family="var(--font-brand)" letter-spacing="0.1em">SALALAH BY-PASS</text>
+                <text x="313" y="127" text-anchor="end" font-size="8" fill="var(--ink-500)" font-family="var(--font-mono)">5.521 km</text>
+                <!-- progress dot -->
+                <circle cx="319" cy="195" r="7" fill="var(--white)" stroke="var(--via-blue)" stroke-width="2.5"/>
+                <circle cx="319" cy="195" r="2.5" fill="var(--via-blue)"/>
+                <!-- compass -->
+                <g transform="translate(750 50)">
+                  <circle r="16" fill="var(--white)" stroke="var(--ink-300)" stroke-width="0.8"/>
+                  <path d="M 0 -13 L 3 0 L 0 13 L -3 0 Z" fill="var(--ink-800)"/>
+                  <path d="M 0 -13 L 3 0 L 0 0 Z" fill="var(--via-red)"/>
+                  <text y="-18" text-anchor="middle" font-size="8" fill="var(--ink-900)" font-weight="600" font-family="var(--font-mono)">N</text>
+                </g>
+                <text x="600" y="285" font-family="var(--font-brand)" font-weight="700" font-size="13" fill="var(--blue-600)" letter-spacing="0.3em" opacity="0.7">ARABIAN  SEA</text>
+              </svg>
+              <div class="map-legend">
+                <div class="lr"><svg width="18" height="5"><line x1="0" y1="2.5" x2="18" y2="2.5" stroke="var(--via-blue)" stroke-width="3"/></svg>Completed 39.25%</div>
+                <div class="lr"><svg width="18" height="5"><line x1="0" y1="2.5" x2="18" y2="2.5" stroke="var(--via-red)" stroke-width="2" stroke-dasharray="3 2"/></svg>Under construction</div>
+                <div class="lr"><svg width="18" height="5"><line x1="0" y1="2.5" x2="18" y2="2.5" stroke="var(--ink-700)" stroke-width="1.5"/></svg>Existing road</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Construction progress photos</div><div class="s">captured June 2026</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="photo-grid">
+          <!-- NOTE: Assumes .jpg extensions. Rename extensions if using .png or .webp -->
+          <button class="photo" onclick="openLightbox(0)">
+            <div class="photo-ph" style="background: url('photo1.jpg') center/cover no-repeat; border-color: transparent;"></div>
+            <div class="photo-cap"><span class="mono photo-idx">P01</span><span class="photo-title">Pier Foundation Backfill</span></div>
+          </button>
+          <button class="photo" onclick="openLightbox(1)">
+            <div class="photo-ph" style="background: url('photo2.jpg') center/cover no-repeat; border-color: transparent;"></div>
+            <div class="photo-cap"><span class="mono photo-idx">P02</span><span class="photo-title">Bitumen Base Course layer</span></div>
+          </button>
+          <button class="photo" onclick="openLightbox(2)">
+            <div class="photo-ph" style="background: url('photo3.jpg') center/cover no-repeat; border-color: transparent;"></div>
+            <div class="photo-cap"><span class="mono photo-idx">P03</span><span class="photo-title">Utilities Future Ducts</span></div>
+          </button>
+          <button class="photo" onclick="openLightbox(3)">
+            <div class="photo-ph" style="background: url('photo4.jpg') center/cover no-repeat; border-color: transparent;"></div>
+            <div class="photo-cap"><span class="mono photo-idx">P04</span><span class="photo-title">I-girder work in progress</span></div>
+          </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3 : right rail -->
+      <div class="col c">
+        <!-- timeline -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Project timeline</div><div class="s">key dates</div></div>
+          <div class="panel-body">
+            <div class="tl">
+              <div class="line"></div><div class="done" style="width:53.30%"></div>
+              <div class="node" style="left:0;background:var(--via-blue)"></div>
+              <div class="node" style="left:6.7%;background:var(--via-blue)"></div>
+              <div class="node" style="left:53.30%;background:var(--via-red)"></div>
+              <div class="node" style="left:calc(100% - 10px);background:var(--white);border:1.5px solid var(--ink-300)"></div>
+            </div>
+            <div class="tl-labels">
+              <div style="text-align:left"><div class="d">01-01-2025</div><div class="l">Awarded</div></div>
+              <div style="text-align:center"><div class="d">02-03-2025</div><div class="l">Start</div></div>
+              <div style="text-align:center"><div class="d">30-06-2026</div><div class="l">Today</div></div>
+              <div style="text-align:right"><div class="d">30-08-2027</div><div class="l">Completion</div></div>
+            </div>
+            <div class="tl-stats">
+              <div><div class="sl">Elapsed</div><div class="sv">486<span class="u">d</span></div></div>
+              <div><div class="sl">Remaining</div><div class="sv">426<span class="u">d</span></div></div>
+              <div><div class="sl">Total</div><div class="sv">912<span class="u">d</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- resources -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Resources on site</div><div class="s">planned vs actual</div></div>
+          <div class="panel-body">
+            <div class="res-grid">
+              <div class="res">
+                <div class="rl">Manpower</div><div class="rs">persons</div>
+                <div class="rv">295</div>
+                <div class="track"><span class="p" style="width:90.0%"></span><span class="a" style="width:85.6%"></span><span class="mark" style="left:90.0%"></span></div>
+                <div class="rf"><span>Plan 310</span><span style="color:var(--via-red)"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l6 6 4-4 8 8"/><path d="M17 17h4v-4"/></svg> -15</span></div>
+              </div>
+              <div class="res">
+                <div class="rl">Machinery</div><div class="rs">units</div>
+                <div class="rv">115</div>
+                <div class="track"><span class="p" style="width:90.0%"></span><span class="a" style="width:82.1%"></span><span class="mark" style="left:90.0%"></span></div>
+                <div class="rf"><span>Plan 126</span><span style="color:var(--via-red)"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l6 6 4-4 8 8"/><path d="M17 17h4v-4"/></svg> -11</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- scope + pavement -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Scope &amp; build-up</div><div class="s">key quantities</div></div>
+          <div class="panel-body">
+            <div class="scope-grid">
+        <div class="scope-item"><span class="mono scope-v">27.372<span class="scope-u">km</span></span><span class="scope-l">Asphalt road length</span></div>
+        <div class="scope-item"><span class="mono scope-v">5.521<span class="scope-u">km</span></span><span class="scope-l">Salalah By-pass</span></div>
+        <div class="scope-item"><span class="mono scope-v">8<span class="scope-u">no.</span></span><span class="scope-l">Under-passes</span></div>
+        <div class="scope-item"><span class="mono scope-v">1<span class="scope-u">no.</span></span><span class="scope-l">Flyover</span></div>
+              <div class="scope-item" style="grid-column:1 / -1"><span class="mono scope-v">82<span class="scope-u">no.</span></span><span class="scope-l">Box culverts</span></div>
+            </div>
+            <div class="pav-wrap">
+              <div class="over muted" style="font-size:8px;margin-bottom:4px">Pavement build-up</div>
+              <div class="pav-stack">
+          <div class="pav" style="flex:0.08196721311475409;background:#0F1B26;border-bottom:1px solid var(--white)">
+            <span class="pav-code">BWC</span><span class="pav-name">Bituminous Wearing Course</span><span class="mono">50mm</span>
+          </div>
+          <div class="pav" style="flex:0.09836065573770492;background:#33414F;border-bottom:1px solid var(--white)">
+            <span class="pav-code">BBC</span><span class="pav-name">Bituminous Base Course</span><span class="mono">60mm</span>
+          </div>
+          <div class="pav" style="flex:0.4918032786885246;background:#94A0AC;border-bottom:1px solid var(--white)">
+            <span class="pav-code">ABC</span><span class="pav-name">Aggregate Base Course</span><span class="mono">300mm</span>
+          </div>
+          <div class="pav" style="flex:0.32786885245901637;background:#BDC6CE;">
+            <span class="pav-code">GSB</span><span class="pav-name">Granular Sub-Base</span><span class="mono">200mm</span>
+          </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- trades -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="t">Trade status</div>
+            <div class="trade-key">
+              <span><i style="background:var(--via-green)"></i>Done</span>
+              <span><i style="background:var(--via-blue)"></i>Active</span>
+              <span><i style="background:var(--via-red)"></i>Behind</span>
+              <span><i style="background:var(--ink-300)"></i>N/S</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="trade-grid">
+        <div class="trade"><span class="dot" style="background:var(--via-blue)"></span><span>Protection — cut slope</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-blue)"></span><span>Utilities</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-green)"></span><span>Land acquisition</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-green)"></span><span>Culverts / retaining walls</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-blue)"></span><span>Bridges / tunnels</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-blue)"></span><span>Pedestrian over/underpass</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-green)"></span><span>Earthworks</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-red)"></span><span>Subbase layer</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-red)"></span><span>Aggregate base course</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-red)"></span><span>Bit. base course</span></div>
+        <div class="trade"><span class="dot" style="background:var(--ink-300)"></span><span>Bit. wearing course</span></div>
+        <div class="trade"><span class="dot" style="background:var(--via-blue)"></span><span>Protection — embankment</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- parties -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Project parties</div></div>
+          <div class="panel-body">
+            <div class="party"><div class="r">Client rep.</div><div class="n">Eng. Abdullah Salim Al Ibrahim</div><div class="sub">92766650</div></div>
+            <div class="party"><div class="r">Contractor</div><div class="n">Oman Building &amp; Contracting Co. LLC</div><div class="sub">Eng. Awadh Masan · 97778855</div></div>
+            <div class="party"><div class="r">Consultant</div><div class="n">VIA International — Engineering Consultancy</div><div class="sub">Habib Noor · 98165272</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="foot">
+      <div class="mono">MPR-16 / June-2026 / DGRLT-DHO / Rev-01</div>
+      <div>Prepared by VIA International — Engineering Consultancy · for Ministry of Transport &amp; Communications</div>
+      <div class="brand">
+        <span class="dots"><i style="background:var(--via-green)"></i><i style="background:var(--via-red)"></i></span>
+        <span class="txt">VIA International · Engineering Consultancy</span>
+      </div>
+    </footer>
+
+  </div>
+</div></div>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-inner" onclick="event.stopPropagation()">
+    <div class="lb-photo" id="lb-view" style="background-color: var(--ink-900); background-position: center; background-size: contain; background-repeat: no-repeat; border: none;"></div>
+    <div class="lb-bar">
+      <div>
+        <div class="idx" id="lb-idx">Photo 01 of 4</div>
+        <div class="title" id="lb-title">Pier Foundation Backfill</div>
+        <div class="sub" id="lb-sub">Structure works progress</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="stepLightbox(-1)">← Prev</button>
+        <button onclick="stepLightbox(1)">Next →</button>
+        <button class="primary" onclick="closeLightbox()">Close (Esc)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INTERACTIONS (plain, readable JS) ============ -->
+<script>
+  // 1) Scale the 1920x1080 board to fit any viewport
+  function fitStage(){
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    document.getElementById('stage').style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+
+  // 2) S-curve: cumulative <-> monthly
+  function setMode(mode){
+    var cum = mode === 'cum';
+    document.getElementById('sc-cum').style.display = cum ? 'block' : 'none';
+    document.getElementById('sc-mon').style.display = cum ? 'none' : 'block';
+    document.getElementById('tg-cum').classList.toggle('on', cum);
+    document.getElementById('tg-mon').classList.toggle('on', !cum);
+  }
+
+  // 3) Photo lightbox
+  var PHOTOS = [["Pier Foundation Backfill","Structure works progress"],["Bitumen Base Course layer","Road paving"],["Utilities Future Ducts","Infrastructure works"],["I-girder work in progress","Bridge construction"]];
+  var lbIndex = 0;
+  function openLightbox(i){ lbIndex = i; renderLightbox(); document.getElementById('lightbox').classList.add('open'); }
+  function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
+  function stepLightbox(d){ lbIndex = (lbIndex + d + PHOTOS.length) % PHOTOS.length; renderLightbox(); }
+  function renderLightbox(){
+    document.getElementById('lb-idx').textContent = 'Photo ' + String(lbIndex+1).padStart(2,'0') + ' of ' + PHOTOS.length;
+    document.getElementById('lb-title').textContent = PHOTOS[lbIndex][0];
+    document.getElementById('lb-sub').textContent = PHOTOS[lbIndex][1];
+    document.getElementById('lb-view').style.backgroundImage = "url('photo" + (lbIndex + 1) + ".jpg')";
+  }
+  document.addEventListener('keydown', function(e){
+    if(!document.getElementById('lightbox').classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') stepLightbox(-1);
+    if(e.key === 'ArrowRight') stepLightbox(1);
+  });
+</script>
+</body>
+</html>

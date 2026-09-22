@@ -1,0 +1,41 @@
+INSERT INTO public.projects (
+  id,
+  slug,
+  name,
+  domain,
+  region,
+  status,
+  summary,
+  brief,
+  metric_1_label,
+  metric_1_value,
+  metric_2_label,
+  metric_2_value,
+  sort_order
+) VALUES (
+  '6ed35dd4-c171-4bde-9a2b-e902c9d5bb4e',
+  'raysut-al-mughsayl',
+  'Construction of Dualization for Raysut – Al Mughsayl Asphalt Road',
+  'raysut-al-mughsayl.viainternational.com',
+  'Dhofar, Oman',
+  'active',
+  'Monthly progress reporting for the Raysut–Al Mughsayl road dualization programme.',
+  'Construction monitoring and engineering consultancy for the dualization of the asphalt road between Raysut and Al Mughsayl in Dhofar, Sultanate of Oman.',
+  'Physical progress',
+  '32.93%',
+  'Financial progress',
+  '31.22%',
+  0
+)
+ON CONFLICT (slug) DO UPDATE SET
+  name = EXCLUDED.name,
+  domain = EXCLUDED.domain,
+  region = EXCLUDED.region,
+  status = EXCLUDED.status,
+  summary = EXCLUDED.summary,
+  brief = EXCLUDED.brief,
+  metric_1_label = EXCLUDED.metric_1_label,
+  metric_1_value = EXCLUDED.metric_1_value,
+  metric_2_label = EXCLUDED.metric_2_label,
+  metric_2_value = EXCLUDED.metric_2_value,
+  sort_order = EXCLUDED.sort_order;

@@ -1,0 +1,441 @@
+<!doctype html>
+<!-- Raysut template: structure and styles derived from Dashboard/Raysut dashboard.html. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1920" />
+<title>{{TITLE}}</title>
+
+<!-- VIA International design tokens + Sansation brand font (readable CSS, editable) -->
+<style>{{BRAND_CSS}}</style>
+<!-- Tabular figures -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* =========================================================
+     Site Progress Dashboard — plain HTML/CSS build
+     Fixed 1920x1080 canvas, auto-scaled to the viewport.
+     All colours & type come from the VIA design tokens.
+     ========================================================= */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #061320; }
+  body { font-family: var(--font-brand); color: var(--ink-900); -webkit-font-smoothing: antialiased; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Letterbox stage */
+  .stage-wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .stage { width: 1920px; height: 1080px; background: var(--ink-50); flex-shrink: 0;
+           transform-origin: center center; box-shadow: 0 20px 80px rgba(0,0,0,.5); position: relative; overflow: hidden; }
+
+  .board { width: 1920px; height: 1080px; padding: 20px 28px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* ---- overline helper ---- */
+  .over { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); }
+
+  /* ---- header ---- */
+  .head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 22px;
+          padding: 2px 4px 12px; border-bottom: 2px solid var(--via-blue); }
+  .logo-ph { height: 46px; width: 132px; border: 1.5px dashed var(--ink-300); border-radius: var(--r-md);
+             display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--ink-400); background: var(--white); }
+  .logo-ph .dots { display: inline-flex; gap: 3px; }
+  .logo-ph .dots i { width: 7px; height: 7px; border-radius: var(--r-pill); display: block; }
+  .head .client { padding-left: 14px; border-left: 1px solid var(--border-1); }
+  .head .center { padding-left: 16px; border-left: 1px solid var(--border-1); }
+  .head h1 { font: var(--text-h2); font-size: 23px; letter-spacing: var(--tracking-tight); line-height: 1.05; margin: 0; }
+  .muted { color: var(--ink-500); }
+  .blue { color: var(--via-blue); }
+
+  /* status pill */
+  .pill { display: inline-flex; flex-direction: column; align-items: center; gap: 5px;
+          padding: 9px 16px; border-radius: var(--r-md); border: 1px solid var(--success-border); background: var(--success-bg); }
+  .pill .row { display: flex; align-items: center; gap: 8px; }
+  .pill .led { width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--via-green); box-shadow: 0 0 0 3px rgba(0,146,60,.15); }
+
+  /* ---- KPI cards ---- */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .kpi { padding: 13px 16px 14px; background: var(--white); border: 1px solid var(--border-1);
+         border-radius: var(--r-lg); box-shadow: var(--shadow-sm); height: 96px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kpi .big { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 31px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+  .kpi .big .suf { font-size: 15px; margin-left: 1px; color: var(--ink-500); }
+  .kpi .ref { font: var(--text-caption); color: var(--ink-500); }
+  .kpi .delta { font-family: var(--font-mono); font-size: 10px; font-weight: 700; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  .kpi .prog { margin-top: 5px; height: 4px; background: var(--ink-100); border-radius: var(--r-pill); position: relative; overflow: hidden; }
+  .kpi .prog > i { position: absolute; inset: 0; background: var(--via-blue); border-radius: var(--r-pill); display: block; }
+
+  .ring { flex-shrink: 0; }
+  .cmp { display: flex; gap: 3px; align-items: flex-end; height: 22px; }
+  .cmp b { width: 10px; display: block; }
+  .cmp .lbl { font-family: var(--font-mono); font-size: 7px; color: var(--ink-500); text-align: center; display: block; }
+
+  /* ---- main grid ---- */
+  .grid { flex: 1; display: grid; grid-template-columns: 820px 1fr 440px; gap: 12px; min-height: 0; }
+  .col { display: grid; gap: 12px; min-height: 0; }
+  .col.a { grid-template-rows: 300px 1fr; }
+  .col.b { grid-template-rows: 300px 1fr; }
+  .col.c { grid-template-rows: repeat(5, 1fr); }
+
+  /* ---- panel ---- */
+  .panel { background: var(--white); border: 1px solid var(--border-1); border-radius: var(--r-md);
+           box-shadow: var(--shadow-sm); padding: 13px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline;
+                border-bottom: 1px solid var(--border-1); padding-bottom: 7px; margin-bottom: 9px; gap: 8px; }
+  .panel-head .t { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--via-blue); font-size: 11px; white-space: nowrap; }
+  .panel-head .s { font: var(--text-caption); font-size: 10.5px; color: var(--ink-500); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .panel-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+  /* ---- S-curve ---- */
+  .sc-readouts { display: flex; gap: 18px; margin-bottom: 4px; }
+  .ro .ro-l { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8.5px; color: var(--ink-500); margin-bottom: 2px; }
+  .ro .ro-v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 17px; font-weight: 600; line-height: 1; }
+  .toggle { display: inline-flex; border: 1px solid var(--border-1); border-radius: var(--r-pill); padding: 2px; gap: 2px; }
+  .toggle button { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 9px;
+                   padding: 3px 10px; border: 0; border-radius: var(--r-pill); background: transparent; color: var(--ink-600); cursor: pointer; }
+  .toggle button.on { background: var(--via-blue); color: var(--white); }
+  .sc-wrap { flex: 1; min-height: 0; position: relative; }
+  .sc-wrap svg { width: 100%; height: 100%; display: block; }
+  .sc-wrap svg text.ax { font-family: var(--font-mono); font-size: 8px; fill: var(--ink-500); }
+  .sc-wrap svg text.axnow { font-family: var(--font-mono); font-size: 8px; fill: var(--via-red); font-weight: 600; }
+  .sc-wrap svg text.yr { font-family: var(--font-brand); font-weight: 700; font-size: 10px; fill: var(--ink-900); letter-spacing: .14em; }
+  .sc-legend { display: flex; gap: 16px; align-items: center; margin-top: 4px; }
+  .sc-legend span { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9px; color: var(--ink-700); }
+  .sc-legend i { display: block; width: 16px; height: 0; }
+
+  /* ---- activities ---- */
+  .act-head, .act-row { display: grid; grid-template-columns: minmax(160px,200px) 1fr 50px 56px 56px; gap: 10px; align-items: center; }
+  .act-head { padding-bottom: 4px; border-bottom: 1px solid var(--border-1); }
+  .act-head div { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 9px; color: var(--ink-500); }
+  .act-head .r { text-align: right; }
+  .act-list { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .act-row { flex: 1; border-bottom: 1px dotted var(--border-1); }
+  .act-row:last-child { border-bottom: 0; }
+  .act-name { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .act-bar { position: relative; height: 14px; }
+  .act-bar .tick { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--ink-200); }
+  .act-bar .tick[style*="left:0"] { background: var(--ink-300); }
+  .act-bar .bar-plan { position: absolute; left: 0; top: 1px; height: 12px; background: var(--ink-300); }
+  .act-bar .bar-actual { position: absolute; left: 0; top: 4px; height: 6px; background: var(--via-blue); }
+  .num { font-size: 10px; text-align: right; }
+  .num.muted { color: var(--ink-500); }
+  .num.strong { font-weight: 700; }
+
+  /* ---- map ---- */
+  .map { position: relative; flex: 1; min-height: 0; border: 1px solid var(--border-1); border-radius: var(--r-sm);
+         overflow: hidden; background: linear-gradient(160deg, var(--blue-50), var(--ink-100)); }
+  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .map-legend { position: absolute; left: 8px; top: 8px; background: var(--white); border: 1px solid var(--border-1);
+                border-radius: var(--r-sm); padding: 6px 9px; box-shadow: var(--shadow-xs); }
+  .map-legend .lr { display: flex; align-items: center; gap: 6px; padding: 1px 0; font-family: var(--font-mono); font-size: 9px; color: var(--ink-900); }
+
+  /* ---- photos ---- */
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+  .photo { text-align: left; cursor: zoom-in; display: flex; flex-direction: column; min-height: 0; border: 0; background: none; padding: 0; }
+  .photo-ph { flex: 1; min-height: 0; position: relative; border-radius: var(--r-sm); border: 1px solid var(--border-1);
+              background: linear-gradient(135deg, var(--blue-50), var(--ink-100)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .photo-ph-lbl { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8px; color: var(--ink-400); }
+  .photo-cap { margin-top: 4px; display: flex; align-items: baseline; gap: 6px; }
+  .photo-idx { font-size: 8px; color: var(--ink-500); text-transform: uppercase; letter-spacing: .1em; }
+  .photo-title { font-size: 10px; font-weight: 700; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---- resources ---- */
+  .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
+  .res { display: flex; flex-direction: column; gap: 4px; }
+  .res .rl { font-size: 11px; font-weight: 700; }
+  .res .rs { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); }
+  .res .rv { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 600; line-height: 1; margin-top: 2px; }
+  .res .track { position: relative; height: 8px; background: var(--ink-100); }
+  .res .track .p { position: absolute; top: 0; bottom: 0; background: var(--ink-300); }
+  .res .track .a { position: absolute; top: 2px; bottom: 2px; background: var(--via-blue); }
+  .res .track .mark { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ink-800); }
+  .res .rf { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); display: flex; justify-content: space-between; }
+
+  /* ---- scope + pavement ---- */
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; row-gap: 4px; margin-bottom: 6px; }
+  .scope-item { display: flex; align-items: baseline; gap: 4px; }
+  .scope-v { font-size: 14px; font-weight: 700; }
+  .scope-u { font-size: 8px; color: var(--ink-500); margin-left: 3px; }
+  .scope-l { font-size: 9px; color: var(--ink-700); margin-left: auto; text-align: right; }
+  .pav-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .pav-stack { flex: 1; display: flex; flex-direction: column; border: 1px solid var(--ink-800); min-height: 0; }
+  .pav { min-height: 12px; color: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 8px; font-family: var(--font-mono); font-size: 9px; }
+  .pav-code { font-weight: 700; }
+  .pav-name { opacity: .85; font-size: 8px; }
+
+  /* ---- trades ---- */
+  .trade-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; }
+  .trade { display: flex; align-items: center; gap: 6px; padding: 2px 0; border-bottom: 1px dotted var(--border-1); font-size: 10px; }
+  .trade .dot { width: 7px; height: 7px; border-radius: var(--r-pill); flex-shrink: 0; }
+  .trade-key { display: flex; gap: 8px; margin-top: 2px; }
+  .trade-key span { display: flex; align-items: center; gap: 3px; font-family: var(--font-mono); font-size: 8px; color: var(--ink-500); }
+  .trade-key i { width: 6px; height: 6px; border-radius: var(--r-pill); display: block; }
+
+  /* ---- timeline ---- */
+  .tl { position: relative; height: 32px; margin-top: 14px; }
+  .tl .line { position: absolute; left: 0; right: 0; top: 16px; height: 2px; background: var(--ink-200); }
+  .tl .done { position: absolute; left: 0; top: 16px; height: 2px; background: var(--via-blue); }
+  .tl .node { position: absolute; top: 11px; width: 10px; height: 10px; border-radius: var(--r-pill); }
+  .tl-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+  .tl-labels .d { font-family: var(--font-mono); font-size: 8px; color: var(--ink-500); text-transform: uppercase; letter-spacing: .12em; }
+  .tl-labels .l { font-size: 10px; font-weight: 700; }
+  .tl-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border-1); }
+  .tl-stats .sl { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8px; color: var(--ink-500); }
+  .tl-stats .sv { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 16px; font-weight: 600; line-height: 1.1; }
+  .tl-stats .sv .u { font-size: 9px; color: var(--ink-500); margin-left: 2px; }
+
+  /* ---- parties ---- */
+  .party { padding: 3px 0; border-bottom: 1px dotted var(--border-1); }
+  .party .r { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 8px; color: var(--ink-500); }
+  .party .n { font-size: 11px; font-weight: 700; line-height: 1.15; }
+  .party .sub { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); line-height: 1.2; }
+
+  /* ---- footer ---- */
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 0; border-top: 1px solid var(--border-1); font-size: 10px; color: var(--ink-500); }
+  .foot .brand { display: flex; align-items: center; gap: 7px; }
+  .foot .brand .dots { display: inline-flex; gap: 3px; }
+  .foot .brand .dots i { width: 6px; height: 6px; border-radius: var(--r-pill); display: block; }
+  .foot .brand .txt { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--via-blue); }
+
+  /* ---- lightbox ---- */
+  .lightbox { position: fixed; inset: 0; background: rgba(2,26,46,.88); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .lightbox.open { display: flex; }
+  .lb-inner { width: min(1400px, 86%); }
+  .lb-photo { aspect-ratio: 16/9; background: var(--blue-100); border: 1px solid var(--blue-300); border-radius: var(--r-md);
+              display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .lb-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; color: var(--white); }
+  .lb-bar .idx { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 10px; color: var(--fg-on-blue-dim); }
+  .lb-bar .title { font: var(--text-h3); color: var(--white); margin-top: 4px; }
+  .lb-bar .sub { font-size: 13px; color: var(--fg-on-blue-dim); margin-top: 4px; }
+  .lb-bar button { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--tracking-overline); font-size: 11px;
+                   padding: 9px 16px; border-radius: var(--r-md); border: 1px solid rgba(255,255,255,.35); background: transparent; color: var(--white); cursor: pointer; }
+  .lb-bar button.primary { background: var(--via-blue); border-color: var(--via-blue); box-shadow: var(--shadow-blue); }
+  .panel-body { overflow: auto; }
+  .head > div, .head .center { min-width: 0; }
+  .head h1 { overflow-wrap: anywhere; }
+  /* Keep lightbox controls inside short preview iframes as well as full screens. */
+  .lb-inner { width: min(1400px,86vw,calc((100vh - 140px) * 16 / 9)); max-height: 94vh; overflow: auto; }
+  .lb-bar { gap: 12px; flex-wrap: wrap; }
+  .lightbox .lb-bar button.primary { position: fixed; top: 12px; right: 12px; z-index: 101; }
+</style>
+</head>
+<body>
+<div class="stage-wrap"><div class="stage" id="stage">
+  <div class="board">
+
+    <!-- ============ HEADER ============ -->
+    <header class="head">
+{{HEADER}}
+</header>
+
+    <!-- ============ KPI STRIP ============ -->
+    <section class="kpis">
+{{KPIS}}
+</section>
+
+    <!-- ============ MAIN GRID ============ -->
+    <div class="grid">
+
+      <!-- COLUMN 1 : S-curve + activities -->
+      <div class="col a">
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Cumulative progress · S-curve</div>
+              <div class="s">planned vs achieved · {{REVISION}} programme</div>
+            </div>
+            <div class="toggle">
+              <button id="tg-cum" class="on" onclick="setMode('cum')">Cum.</button>
+              <button id="tg-mon" onclick="setMode('mon')">Mo.</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="sc-readouts">
+{{READOUTS}}
+</div>
+            <div class="sc-wrap">
+{{CHARTS}}
+</div>
+            <div class="sc-legend">
+{{LEGEND}}
+</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Physical progress of major activities</div>
+              <div class="s">cumulative as of {{AS_OF}}</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="act-head">
+              <div>Activity</div><div>Progress (0–100%)</div><div class="r">Plan</div><div class="r">Actual</div><div class="r">Δ</div>
+            </div>
+            <div class="act-list">
+{{ACTIVITIES}}
+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2 : map + photos -->
+      <div class="col b">
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Project layout</div><div class="s">schematic alignment · NTS</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="map">
+{{LAYOUT}}
+</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:baseline;gap:9px;min-width:0">
+              <div class="t">Construction progress photos</div><div class="s">captured {{REPORT_MONTH}}</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="photo-grid">
+{{PHOTOS}}
+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3 : right rail -->
+      <div class="col c">
+        <!-- timeline -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Project timeline</div><div class="s">key dates</div></div>
+          <div class="panel-body">
+{{TIMELINE}}
+</div>
+        </div>
+
+        <!-- resources -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Resources on site</div><div class="s">planned vs actual</div></div>
+          <div class="panel-body">
+            <div class="res-grid">
+{{RESOURCES}}
+</div>
+          </div>
+        </div>
+
+        <!-- scope + pavement -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Scope &amp; build-up</div><div class="s">key quantities</div></div>
+          <div class="panel-body">
+            <div class="scope-grid">
+{{SCOPE}}
+</div>
+            <div class="pav-wrap">
+              <div class="over muted" style="font-size:8px;margin-bottom:4px">Pavement build-up</div>
+              <div class="pav-stack">
+{{LAYERS}}
+</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- trades -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="t">Trade status</div>
+            <div class="trade-key">
+              <span><i style="background:var(--via-green)"></i>Done</span>
+              <span><i style="background:var(--via-blue)"></i>Active</span>
+              <span><i style="background:var(--via-red)"></i>Behind</span>
+              <span><i style="background:var(--ink-300)"></i>N/S</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="trade-grid">
+{{TRADES}}
+</div>
+          </div>
+        </div>
+
+        <!-- parties -->
+        <div class="panel">
+          <div class="panel-head"><div class="t">Project parties</div></div>
+          <div class="panel-body">
+{{PARTIES}}
+</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="foot">
+{{FOOTER}}
+</footer>
+
+  </div>
+</div></div>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-inner" onclick="event.stopPropagation()">
+    <div class="lb-photo" id="lb-view" style="background-color: var(--ink-900); background-position: center; background-size: contain; background-repeat: no-repeat; border: none;"></div>
+    <div class="lb-bar">
+      <div>
+        <div class="idx" id="lb-idx">Photo 01 of 4</div>
+        <div class="title" id="lb-title"></div>
+        <div class="sub" id="lb-sub"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="stepLightbox(-1)">← Prev</button>
+        <button onclick="stepLightbox(1)">Next →</button>
+        <button class="primary" onclick="closeLightbox()">Close (Esc)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INTERACTIONS (plain, readable JS) ============ -->
+<script>
+  // 1) Scale the 1920x1080 board to fit any viewport
+  function fitStage(){
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    document.getElementById('stage').style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+
+  // 2) S-curve: cumulative <-> monthly
+  function setMode(mode){
+    if (!document.getElementById('sc-cum')) return;
+    var cum = mode === 'cum';
+    document.getElementById('sc-cum').style.display = cum ? 'block' : 'none';
+    document.getElementById('sc-mon').style.display = cum ? 'none' : 'block';
+    document.getElementById('tg-cum').classList.toggle('on', cum);
+    document.getElementById('tg-mon').classList.toggle('on', !cum);
+  }
+
+  // 3) Photo lightbox
+  var PHOTOS = {{PHOTOS_JSON}};
+  var lbIndex = 0;
+  function openLightbox(i){ lbIndex = i; renderLightbox(); document.getElementById('lightbox').classList.add('open'); }
+  function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
+  function stepLightbox(d){ lbIndex = (lbIndex + d + PHOTOS.length) % PHOTOS.length; renderLightbox(); }
+  function renderLightbox(){
+    document.getElementById('lb-idx').textContent = 'Photo ' + String(lbIndex+1).padStart(2,'0') + ' of ' + PHOTOS.length;
+    document.getElementById('lb-title').textContent = PHOTOS[lbIndex][0];
+    document.getElementById('lb-sub').textContent = PHOTOS[lbIndex][1];
+    document.getElementById('lb-view').style.backgroundImage = 'url("' + PHOTOS[lbIndex][2] + '")';
+  }
+  document.addEventListener('keydown', function(e){
+    if(!document.getElementById('lightbox').classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') stepLightbox(-1);
+    if(e.key === 'ArrowRight') stepLightbox(1);
+  });
+</script>
+</body>
+</html>

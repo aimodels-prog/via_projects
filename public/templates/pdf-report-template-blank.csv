@@ -1,0 +1,127 @@
+section,field,value,planned,actual,instructions
+project,Project URL slug,,,,Existing project URL; use the same URL for monthly updates
+project,Project number,,,,Project or contract reference
+project,Project type,,,,Dashboard project classification
+monthly,Report number,,,,Monthly report number
+monthly,Footer code,,,,Dashboard footer reference
+project,Project name,,,,Full project title
+project,Region,,,,Governorate or location
+project,Client,,,,Client or ministry name
+project,Client department,,,,Department name
+project,Approved contract total,,,,Number without currency; keep all decimals
+project,Currency,,,,R.O. or OMR for this PDF design
+project,Award date,,,,YYYY-MM-DD
+project,Start date,,,,YYYY-MM-DD
+project,Completion date,,,,YYYY-MM-DD
+project,Mobilization days,,,,Whole days
+project,Construction days,,,,Whole days
+project,Construction days with VOs,,,,As agreed including variations; leave blank if unknown
+project,Completion date with VOs,,,,YYYY-MM-DD; leave blank if unknown
+project,Brief description,,,,Scope and description; Excel will quote commas and line breaks
+project,Planned manpower,,,,Number of people
+project,Planned machinery,,,,Number of machines
+project,Consultant,,,,Organisation name
+project,Consultant representative,,,,Name
+project,Consultant role,,,,Job title
+project,Consultant phone,,,,Set Excel cell format to Text to preserve leading zeros
+project,Contractor,,,,Organisation name
+project,Contractor representative,,,,Name
+project,Contractor role,,,,Job title
+project,Contractor phone,,,,Set Excel cell format to Text to preserve leading zeros
+project,Client engineer,,,,Name
+project,Client engineer phone,,,,Set Excel cell format to Text to preserve leading zeros
+monthly,Data as of,,,,YYYY-MM-DD; report month is calculated from this date
+monthly,Revision,,,,For example Rev-01
+monthly,Elapsed days,,,,Whole days; remaining days are calculated if left blank
+monthly,Remaining days,,,,Optional override of construction days minus elapsed days
+monthly,Expected completion date,,,,YYYY-MM-DD; leave blank if unknown
+monthly,Cumulative planned progress %,,,,Enter 47.95 for 47.95 percent
+monthly,Cumulative actual progress %,,,,Enter 40.94 for 40.94 percent
+monthly,This month planned %,,,,This month only; no percent sign
+monthly,This month actual %,,,,This month only; no percent sign
+monthly,Planned financial progress %,,,,Percentage; preserve source precision
+monthly,Actual financial progress %,,,,Percentage; not calculated from paid amount
+monthly,Actually paid amount,,,,Paid amount in the project currency; not anticipated payment
+monthly,Actual manpower,,,,Number of people this month
+monthly,Actual machinery,,,,Number of machines this month
+contract,Original contract (No Cont.),,,,Amount or Nil/NA as appropriate; do not guess
+contract,Contingency,,,,Amount or Nil/NA as appropriate; do not guess
+contract,Original contract (with Cont.),,,,Amount or Nil/NA as appropriate; do not guess
+contract,Contract (with VO.1),,,,Amount or Nil/NA as appropriate; do not guess
+contract,Contract (with VO.2),,,,Amount or Nil/NA as appropriate; do not guess
+contract,Contract (with VO.3 & Cont.),,,,Amount or Nil/NA as appropriate; do not guess
+contract,Contract (with VO.4 & Cont.),,,,Amount or Nil/NA as appropriate; do not guess
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,Enter activity name in field; percentages in planned and actual; unused rows stay blank
+photo,photo_1,,,,Caption only. Upload picture 1 manually in the app; order top-left then top-right then bottom-left then bottom-right
+photo,photo_2,,,,Caption only. Upload picture 2 manually in the app; order top-left then top-right then bottom-left then bottom-right
+photo,photo_3,,,,Caption only. Upload picture 3 manually in the app; order top-left then top-right then bottom-left then bottom-right
+photo,photo_4,,,,Caption only. Upload picture 4 manually in the app; order top-left then top-right then bottom-left then bottom-right
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+scope,,,,,field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,,,,,field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,,,,,field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,,,,,field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,,,,,field=description; value=quantity; planned=unit (km/m/no.); actual blank
+layer,,,,,field=layer code; value=description; planned=thickness in mm; actual blank
+layer,,,,,field=layer code; value=description; planned=thickness in mm; actual blank
+layer,,,,,field=layer code; value=description; planned=thickness in mm; actual blank
+layer,,,,,field=layer code; value=description; planned=thickness in mm; actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,,,,,field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank

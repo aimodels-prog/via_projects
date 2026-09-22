@@ -1,0 +1,140 @@
+﻿section,field,value,planned,actual,instructions
+project,Project URL slug,,,,DUMMY DEMO DATA — NOT FOR REPORTING. Existing project URL; required when reusing a saved layout
+project,Project number,DEMO ONLY / 2026 / 01,,,DUMMY DEMO DATA — NOT FOR REPORTING. Project or contract reference
+project,Project type,Illustrative data — not an approved report,,,DUMMY DEMO DATA — NOT FOR REPORTING. Dashboard project classification
+monthly,Report number,17,,,DUMMY DEMO DATA — NOT FOR REPORTING. Monthly report number
+monthly,Footer code,DUMMY DATA — NOT FOR REPORTING,,,DUMMY DEMO DATA — NOT FOR REPORTING. Dashboard footer reference
+project,Project name,Construction Works of Mughsayl Road and Bridge,,,DUMMY DEMO DATA — NOT FOR REPORTING. Full project title
+project,Region,"Governorate of Dhofar, Sultanate of Oman",,,DUMMY DEMO DATA — NOT FOR REPORTING. Governorate or location
+project,Client,Example Transport Authority,,,DUMMY DEMO DATA — NOT FOR REPORTING. Client or ministry name
+project,Client department,Roads & Land Transport,,,DUMMY DEMO DATA — NOT FOR REPORTING. Department name
+project,Approved contract total,34844451.558,,,DUMMY DEMO DATA — NOT FOR REPORTING. Number without currency; keep all decimals
+project,Currency,R.O.,,,DUMMY DEMO DATA — NOT FOR REPORTING. R.O. or OMR for this PDF design
+project,Award date,2025-01-01,,,DUMMY DEMO DATA — NOT FOR REPORTING. YYYY-MM-DD
+project,Start date,2025-03-02,,,DUMMY DEMO DATA — NOT FOR REPORTING. YYYY-MM-DD
+project,Completion date,2027-08-30,,,DUMMY DEMO DATA — NOT FOR REPORTING. YYYY-MM-DD
+project,Mobilization days,60,,,DUMMY DEMO DATA — NOT FOR REPORTING. Whole days
+project,Construction days,912,,,DUMMY DEMO DATA — NOT FOR REPORTING. Whole days
+project,Construction days with VOs,,,,DUMMY DEMO DATA — NOT FOR REPORTING. As agreed including variations; leave blank if unknown
+project,Completion date with VOs,,,,DUMMY DEMO DATA — NOT FOR REPORTING. YYYY-MM-DD; leave blank if unknown
+project,Brief description,Bridge and approach road works,,,DUMMY DEMO DATA — NOT FOR REPORTING. Scope and description; Excel will quote commas and line breaks
+project,Planned manpower,310,,,DUMMY DEMO DATA — NOT FOR REPORTING. Number of people
+project,Planned machinery,126,,,DUMMY DEMO DATA — NOT FOR REPORTING. Number of machines
+project,Consultant,VIA International — Engineering Consultancy,,,DUMMY DEMO DATA — NOT FOR REPORTING. Organisation name
+project,Consultant representative,Demo Resident Engineer,,,DUMMY DEMO DATA — NOT FOR REPORTING. Name
+project,Consultant role,Resident Engineer,,,DUMMY DEMO DATA — NOT FOR REPORTING. Job title
+project,Consultant phone,Demo contact,,,DUMMY DEMO DATA — NOT FOR REPORTING. Set Excel cell format to Text to preserve leading zeros
+project,Contractor,Example Road & Bridge Contractor,,,DUMMY DEMO DATA — NOT FOR REPORTING. Organisation name
+project,Contractor representative,Demo Project Manager,,,DUMMY DEMO DATA — NOT FOR REPORTING. Name
+project,Contractor role,Project Manager,,,DUMMY DEMO DATA — NOT FOR REPORTING. Job title
+project,Contractor phone,Demo contact,,,DUMMY DEMO DATA — NOT FOR REPORTING. Set Excel cell format to Text to preserve leading zeros
+project,Client engineer,Demo Client Representative,,,DUMMY DEMO DATA — NOT FOR REPORTING. Name
+project,Client engineer phone,Demo contact,,,DUMMY DEMO DATA — NOT FOR REPORTING. Set Excel cell format to Text to preserve leading zeros
+monthly,Data as of,2026-07-31,,,DUMMY DEMO DATA — NOT FOR REPORTING. YYYY-MM-DD; report month is calculated from this date
+monthly,Revision,Rev-01,,,DUMMY DEMO DATA — NOT FOR REPORTING. For example Rev-01
+monthly,Elapsed days,517,,,DUMMY DEMO DATA — NOT FOR REPORTING. Whole days; remaining days are calculated if left blank
+monthly,Remaining days,395,,,DUMMY DEMO DATA — NOT FOR REPORTING. Optional override of construction days minus elapsed days
+monthly,Expected completion date,2027-08-30,,,DUMMY DEMO DATA — NOT FOR REPORTING. YYYY-MM-DD; leave blank if unknown
+monthly,Cumulative planned progress %,47.95,,,DUMMY DEMO DATA — NOT FOR REPORTING. Enter 47.95 for 47.95 percent
+monthly,Cumulative actual progress %,40.94,,,DUMMY DEMO DATA — NOT FOR REPORTING. Enter 40.94 for 40.94 percent
+monthly,This month planned %,3.72,,,DUMMY DEMO DATA — NOT FOR REPORTING. This month only; no percent sign
+monthly,This month actual %,1.69,,,DUMMY DEMO DATA — NOT FOR REPORTING. This month only; no percent sign
+monthly,Planned financial progress %,,,,DUMMY DEMO DATA — NOT FOR REPORTING. Percentage; preserve source precision
+monthly,Actual financial progress %,33.38,,,DUMMY DEMO DATA — NOT FOR REPORTING. Percentage; not calculated from paid amount
+monthly,Actually paid amount,10969331.064,,,DUMMY DEMO DATA — NOT FOR REPORTING. Paid amount in the project currency; not anticipated payment
+monthly,Actual manpower,290,,,DUMMY DEMO DATA — NOT FOR REPORTING. Number of people this month
+monthly,Actual machinery,110,,,DUMMY DEMO DATA — NOT FOR REPORTING. Number of machines this month
+contract,Original contract (No Cont.),,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+contract,Contingency,,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+contract,Original contract (with Cont.),,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+contract,Contract (with VO.1),,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+contract,Contract (with VO.2),,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+contract,Contract (with VO.3 & Cont.),,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+contract,Contract (with VO.4 & Cont.),,,,DUMMY DEMO DATA — NOT FOR REPORTING. Amount or Nil/NA as appropriate; do not guess Demo does not specify this contract breakdown; left blank.
+activity,Mobilization,,60,60,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Unclassified Excavation,,62.72,71.79,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Unclassified Str. Excavation,,98.97,103.4,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,GSB (Class-B),,43,30,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,ABC (Class-B),,45.21,24.92,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Bit. Base Course (Class-B),,43.94,19.72,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Bit. Wearing (Class-B),,38.1,0,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Concrete C-15,,78.38,78.68,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Concrete C-35,,63.67,54.82,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,Steel (any dia.),,65.59,52.2,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+activity,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. Enter activity name in field; percentages in planned and actual; unused rows stay blank
+photo,photo_1,Pier foundation backfill,,,DUMMY DEMO DATA — NOT FOR REPORTING. Caption only. Upload picture 1 manually in the app; order top-left then top-right then bottom-left then bottom-right
+photo,photo_2,Bitumen base course layer,,,DUMMY DEMO DATA — NOT FOR REPORTING. Caption only. Upload picture 2 manually in the app; order top-left then top-right then bottom-left then bottom-right
+photo,photo_3,Utilities future ducts,,,DUMMY DEMO DATA — NOT FOR REPORTING. Caption only. Upload picture 3 manually in the app; order top-left then top-right then bottom-left then bottom-right
+photo,photo_4,I-girder work in progress,,,DUMMY DEMO DATA — NOT FOR REPORTING. Caption only. Upload picture 4 manually in the app; order top-left then top-right then bottom-left then bottom-right
+schedule,Feb-25,,0.5,0.5,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Mar-25,,0.6,0.6,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Apr-25,,0.8,0.8,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,May-25,,1.1,1.1,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jun-25,,1.5,1.5,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jul-25,,1.8,1.8,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Aug-25,,2.1,2.1,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Sep-25,,2.5,2.5,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Oct-25,,2.8,2.8,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Nov-25,,3.1,3.1,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Dec-25,,3.4,3.4,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jan-26,,3.6,3.6,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Feb-26,,3.8,3.5,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Mar-26,,3.9,3.2,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Apr-26,,4,3,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,May-26,,4.2,2.5,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jun-26,,4.53,3.25,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jul-26,,3.72,1.69,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Aug-26,,4,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Sep-26,,4.2,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Oct-26,,4.4,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Nov-26,,4.6,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Dec-26,,4.8,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jan-27,,4.5,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Feb-27,,4.2,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Mar-27,,3.8,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Apr-27,,3.5,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,May-27,,3,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jun-27,,2.5,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Jul-27,,2,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,Aug-27,,6.55,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+schedule,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=Mon-YY; planned/actual=this month percentages; value blank. Start at programme beginning; cumulative totals calculated. Future actual blank.
+scope,Asphalt road length,28.09,km,,DUMMY DEMO DATA — NOT FOR REPORTING. field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,Salalah By-pass,5.521,km,,DUMMY DEMO DATA — NOT FOR REPORTING. field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,Under-passes,8,no.,,DUMMY DEMO DATA — NOT FOR REPORTING. field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,Flyover,1,no.,,DUMMY DEMO DATA — NOT FOR REPORTING. field=description; value=quantity; planned=unit (km/m/no.); actual blank
+scope,Box culverts,82,no.,,DUMMY DEMO DATA — NOT FOR REPORTING. field=description; value=quantity; planned=unit (km/m/no.); actual blank
+layer,BWC,Bituminous Wearing Course,50,,DUMMY DEMO DATA — NOT FOR REPORTING. field=layer code; value=description; planned=thickness in mm; actual blank
+layer,BBC,Bituminous Base Course,60,,DUMMY DEMO DATA — NOT FOR REPORTING. field=layer code; value=description; planned=thickness in mm; actual blank
+layer,ABC,Aggregate Base Course,300,,DUMMY DEMO DATA — NOT FOR REPORTING. field=layer code; value=description; planned=thickness in mm; actual blank
+layer,GSB,Granular Sub-Base,200,,DUMMY DEMO DATA — NOT FOR REPORTING. field=layer code; value=description; planned=thickness in mm; actual blank
+trade,Protection — cut slope,active,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Utilities,active,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Land acquisition,complete,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Culverts / retaining walls,complete,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Bridges / tunnels,active,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Pedestrian over/underpass,active,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Earthworks,complete,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Subbase layer,behind,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Aggregate base course,behind,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Bit. base course,behind,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Bit. wearing course,notstarted,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+trade,Protection — embankment,active,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=trade name; value=complete/active/behind/notstarted/unknown; planned and actual blank
+layout,template,raysut-reference,,,DUMMY DEMO DATA — NOT FOR REPORTING. value=saved layout ID or raysut-reference (the exact demo illustration); leave blank for manual setup
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month
+layout_section,,,,,DUMMY DEMO DATA — NOT FOR REPORTING. field=saved section ID; value=complete/construction/existing/unknown; fill every saved section for this month

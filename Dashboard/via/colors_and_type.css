@@ -1,0 +1,197 @@
+/* ============================================================
+   VIA International — Foundations: Color & Type
+   Civil engineering · environmental · geotechnical consultancy
+   "Increasing Comfort, Respecting the Environment, with Style"
+   ============================================================ */
+
+/* ---------- Brand typeface: Sansation ---------- */
+@font-face {
+  font-family: "Sansation";
+  src: url("fonts/Sansation-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sansation";
+  src: url("fonts/Sansation-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sansation";
+  src: url("fonts/Sansation-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sansation";
+  src: url("fonts/Sansation-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sansation";
+  src: url("fonts/Sansation-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sansation";
+  src: url("fonts/Sansation-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* ============ FONT FAMILIES ============ */
+  /* Sansation is the single brand voice — geometric, friendly, engineered.
+     Weights available: 300 (Light), 400 (Regular), 700 (Bold) + italics. */
+  --font-brand: "Sansation", "Trebuchet MS", system-ui, sans-serif;
+  --font-body:  "Sansation", "Trebuchet MS", system-ui, sans-serif;
+  /* Tabular / monospace data — keeps figures aligned in tables & readouts. */
+  --font-mono:  "JetBrains Mono", "SF Mono", "Consolas", ui-monospace, monospace;
+
+  /* ============ BRAND CORE COLORS ============ */
+  --via-blue:   #05538F; /* PRIMARY — sampled from logomark */
+  --via-red:    #E32420; /* Italian-flag red dot */
+  --via-green:  #00923C; /* Italian-flag green dot */
+
+  /* ============ BLUE SCALE (primary) ============ */
+  --blue-950: #021A2E;
+  --blue-900: #02233D;
+  --blue-800: #033A63;
+  --blue-700: #05538F; /* = --via-blue */
+  --blue-600: #0A6BB0;
+  --blue-500: #1A82CC;
+  --blue-400: #4FA3DC;
+  --blue-300: #8FC4E8;
+  --blue-200: #C4E0F2;
+  --blue-100: #E8F2FA;
+  --blue-50:  #F4F9FD;
+
+  /* ============ NEUTRAL / SLATE SCALE ============ */
+  --ink-900: #0F1B26;
+  --ink-800: #1E2D3A;
+  --ink-700: #33414F;
+  --ink-600: #4D5C6B;
+  --ink-500: #6B7886;
+  --ink-400: #94A0AC;
+  --ink-300: #BDC6CE;
+  --ink-200: #DDE3E8;
+  --ink-100: #EEF1F4;
+  --ink-50:  #F7F9FA;
+  --white:   #FFFFFF;
+
+  /* ============ SEMANTIC ROLES ============ */
+  --fg-1: var(--ink-900);   /* primary text */
+  --fg-2: var(--ink-600);   /* secondary text */
+  --fg-3: var(--ink-400);   /* tertiary / captions */
+  --fg-on-blue: #FFFFFF;    /* text on deep-blue surfaces */
+  --fg-on-blue-dim: #BBD3E6;
+
+  --bg-1: var(--white);     /* base surface */
+  --bg-2: var(--ink-50);    /* app canvas / page */
+  --bg-3: var(--ink-100);   /* sunken / well */
+  --bg-brand: var(--via-blue);
+  --bg-brand-deep: var(--blue-900);
+
+  --border-1: var(--ink-200); /* default hairline */
+  --border-2: var(--ink-300); /* stronger divider */
+  --border-focus: var(--blue-500);
+
+  --accent: var(--via-blue);
+  --accent-hover: var(--blue-800);
+  --accent-active: var(--blue-900);
+
+  /* status */
+  --success: var(--via-green);
+  --success-bg: #E4F3EA;
+  --success-border: #A8D8BB;
+  --danger: var(--via-red);
+  --danger-bg: #FBE7E6;
+  --danger-border: #F2B4B2;
+  --warning: #C77800;
+  --warning-bg: #FBF0DC;
+  --warning-border: #EBCB8E;
+  --info: var(--blue-600);
+  --info-bg: var(--blue-100);
+  --info-border: var(--blue-200);
+
+  /* data-viz categorical sequence (charts, map layers, org chart) */
+  --data-1: #05538F; /* blue */
+  --data-2: #00923C; /* green */
+  --data-3: #E32420; /* red */
+  --data-4: #0A6BB0; /* mid blue */
+  --data-5: #C77800; /* amber */
+  --data-6: #6B7886; /* slate */
+  --data-7: #4FA3DC; /* light blue */
+  --data-8: #7A4FB0; /* violet accent */
+
+  /* ============ TYPE SCALE ============ */
+  /* Modular ~1.25. Display weights lean Bold; body Regular; meta Light. */
+  --text-display: 700 56px/1.05 var(--font-brand);
+  --text-h1:      700 40px/1.12 var(--font-brand);
+  --text-h2:      700 30px/1.18 var(--font-brand);
+  --text-h3:      700 23px/1.25 var(--font-brand);
+  --text-h4:      700 19px/1.3  var(--font-brand);
+  --text-lead:    300 21px/1.5  var(--font-body);
+  --text-body:    400 16px/1.6  var(--font-body);
+  --text-body-sm: 400 14px/1.55 var(--font-body);
+  --text-caption: 400 12.5px/1.4 var(--font-body);
+  --text-overline:700 12px/1.2  var(--font-brand);
+  --text-mono:    400 13px/1.5  var(--font-mono);
+
+  --tracking-overline: 0.14em; /* wide tracking = brand signature (cf. "INTERNATIONAL") */
+  --tracking-tight: -0.01em;
+
+  /* ============ RADII ============ */
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 18px;
+  --r-pill: 999px; /* the logomark itself is built from full pill caps */
+
+  /* ============ SPACING (4pt base) ============ */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+
+  /* ============ ELEVATION ============ */
+  --shadow-xs: 0 1px 2px rgba(15,27,38,0.06);
+  --shadow-sm: 0 1px 3px rgba(15,27,38,0.08), 0 1px 2px rgba(15,27,38,0.04);
+  --shadow-md: 0 4px 12px rgba(15,27,38,0.08), 0 2px 4px rgba(15,27,38,0.04);
+  --shadow-lg: 0 12px 28px rgba(15,27,38,0.12), 0 4px 8px rgba(15,27,38,0.05);
+  --shadow-blue: 0 10px 26px rgba(5,83,143,0.22);
+
+  /* ============ MOTION ============ */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 320ms;
+}
+
+/* ============ SEMANTIC ELEMENT DEFAULTS ============ */
+.via-display { font: var(--text-display); letter-spacing: var(--tracking-tight); color: var(--fg-1); }
+h1, .via-h1 { font: var(--text-h1); letter-spacing: var(--tracking-tight); color: var(--fg-1); margin: 0; }
+h2, .via-h2 { font: var(--text-h2); color: var(--fg-1); margin: 0; }
+h3, .via-h3 { font: var(--text-h3); color: var(--fg-1); margin: 0; }
+h4, .via-h4 { font: var(--text-h4); color: var(--fg-1); margin: 0; }
+.via-lead   { font: var(--text-lead); color: var(--fg-2); }
+.via-body, p { font: var(--text-body); color: var(--fg-1); }
+.via-small  { font: var(--text-body-sm); color: var(--fg-2); }
+.via-caption{ font: var(--text-caption); color: var(--fg-3); }
+.via-overline {
+  font: var(--text-overline);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--via-blue);
+}
+.via-mono { font: var(--text-mono); }
