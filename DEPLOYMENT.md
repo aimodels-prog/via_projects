@@ -1,5 +1,25 @@
 # Contabo VPS deployment
 
+## Installed shared-server configuration
+
+The production portal uses `compose.contabo.yaml` under `/opt/via/apps/via-projects`,
+with Compose project name `via-projects`. It shares only the existing `via_proxy`
+network with Caddy; PostgreSQL stays on its own internal network. Neither the app
+nor the database publishes a host port. `projects.via-int.com` proxies to
+`via-projects-app:3000`. The production image excludes the public demo pages.
+
+Use `docker compose -f compose.contabo.yaml up -d --build` for this installation,
+not the generic `compose.yaml` instructions below. Secrets are in the root-only
+server `.env`; development passwords are not used. Existing local projects are
+not automatically copied to production.
+
+`scripts/deploy/backup-contabo.sh` stops only this portal briefly for a consistent
+database/files backup, then starts it again. The companion systemd timer runs at
+03:40 UTC daily (plus up to two minutes of random delay). Backups include credentials,
+are root-only, and stay under `/opt/via/backups/via-projects`. They are not off-site
+or encrypted; add encrypted off-site copies and a tested retention policy before
+relying on this as disaster recovery. No automatic backup deletion is configured.
+
 The app is a Node server, PostgreSQL database, and private persistent report storage. PostgreSQL holds project identity, access hashes, reporting periods and immutable revision references. Reports, original CSV/PDF evidence, photographs and drafts live in the private reports volume, not a public web directory.
 
 ## Deploy

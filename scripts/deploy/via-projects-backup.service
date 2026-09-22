@@ -1,0 +1,9 @@
+[Unit]
+Description=Back up VIA Projects database and private files
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /opt/via/apps/via-projects/scripts/deploy/backup-contabo.sh
+UMask=0077
