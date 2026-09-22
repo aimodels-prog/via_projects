@@ -1,0 +1,16 @@
+projects.via-int.com {
+    encode zstd gzip
+    request_body {
+        max_size 256MB
+    }
+    reverse_proxy via-projects-app:3000 {
+        header_up X-Real-IP {remote_host}
+        transport http {
+            response_header_timeout 180s
+        }
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+}
