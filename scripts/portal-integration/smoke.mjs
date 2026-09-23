@@ -8,7 +8,7 @@ await db.connect();
 const id = randomUUID();
 const email = `sso-verification-${id}@via-int.com`;
 const base = 'http://127.0.0.1:8080';
-const app = (await db.query('SELECT id FROM "Application" WHERE slug=$1', ['via-projects'])).rows[0];
+const app = (await db.query('SELECT id,"visibleToAllStaff" FROM "Application" WHERE slug=$1', ['via-projects'])).rows[0];
 assert.ok(app, 'Projects tile exists');
 const payload = Buffer.from(JSON.stringify({email, name:'SSO verification', exp:Math.floor(Date.now()/1000)+3600})).toString('base64url');
 const cookie = `via_portal_session=${payload}.${createHmac('sha256',process.env.AUTH_SECRET).update(payload).digest('base64url')}`;
@@ -39,10 +39,16 @@ try {
   await db.query("UPDATE via_projects_sso SET code_expires_at=now()-interval '1 minute' WHERE email=$1 AND session_hash IS NULL",[email]);
   assert.equal((await api('exchange',{code:expiredCode})).data.authorized,false);
   await db.query('UPDATE "StaffProfile" SET "allowedAppIds"=ARRAY[]::text[] WHERE id=$1',[id]);
+  if (app.visibleToAllStaff) {
+    // Respect the live Portal setting: clearing assignments cannot revoke an all-staff app.
+    assert.equal((await api('access',{session:grant.data.session})).data.authorized,true);
+    await db.query('UPDATE "StaffProfile" SET status=$2 WHERE id=$1',[id,'inactive']);
+    console.log('Projects is available to all active Portal staff; testing revocation by deactivating only the synthetic account.');
+  }
   assert.equal((await api('access',{session:grant.data.session})).data.authorized,false);
   const denied=await fetch(`${base}/sso/projects?state=${state}`,{headers:{cookie},redirect:'manual'});
   assert.equal(denied.status,403);
-  await db.query('UPDATE "StaffProfile" SET "allowedAppIds"=$2 WHERE id=$1',[id,[app.id]]);
+  await db.query('UPDATE "StaffProfile" SET "allowedAppIds"=$2,status=$3 WHERE id=$1',[id,[app.id],'active']);
   assert.equal((await api('access',{session:grant.data.session})).data.authorized,false);
   const second=await api('exchange',{code:await launch()});
   assert.equal(second.data.authorized,true);
