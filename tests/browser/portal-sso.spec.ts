@@ -52,6 +52,7 @@ test("staff SSO, protected actions, revocation and public client view", async ({
 }) => {
   await page.goto("/");
   await expect(page).toHaveURL(baseURL + "/");
+  await expect(page.getByRole("link", { name: "Back to administration" })).toHaveCount(0);
   await page.goto("/auth/portal/callback?code=" + "a".repeat(64) + "&state=forged");
   await expect(page.locator("body")).toContainText("could not be verified");
   await page.goto("/admin-login");
@@ -61,6 +62,13 @@ test("staff SSO, protected actions, revocation and public client view", async ({
       (cookie) => cookie.name === "via_projects_staff" && cookie.httpOnly,
     ),
   ).toBe(true);
+  await page.goto("/");
+  await page.getByRole("link", { name: "Back to administration", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin-projects$/);
+  await page.goto("/projects");
+  await expect(
+    page.getByRole("link", { name: "Back to administration", exact: true }),
+  ).toBeVisible();
   await page.goto("/upload");
   await page.getByRole("button", { name: "Enter details manually", exact: true }).click();
   await page.getByLabel("Project name", { exact: true }).fill("SSO test draft");
@@ -69,9 +77,12 @@ test("staff SSO, protected actions, revocation and public client view", async ({
   active = false;
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("Administrator session required");
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: "Back to administration" })).toHaveCount(0);
   const client = await browser.newContext({ baseURL });
   const clientPage = await client.newPage();
   await clientPage.goto("/");
   await expect(clientPage).toHaveURL(baseURL + "/");
+  await expect(clientPage.getByRole("link", { name: "Back to administration" })).toHaveCount(0);
   await client.close();
 });
