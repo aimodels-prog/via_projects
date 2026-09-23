@@ -31,12 +31,6 @@ export function SiteHeader() {
           >
             Company website
           </a>
-          <Link
-            to="/admin-login"
-            className="flex min-h-11 items-center rounded-md border border-brand/25 px-3 text-brand hover:bg-brand/5"
-          >
-            Staff sign in
-          </Link>
         </nav>
       </div>
     </header>

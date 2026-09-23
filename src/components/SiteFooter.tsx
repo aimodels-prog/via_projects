@@ -22,13 +22,10 @@ export function SiteFooter() {
         <div className="flex flex-wrap gap-10 text-sm text-brand">
           <div className="flex flex-col gap-2">
             <span className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Project portal
+              Projects
             </span>
             <Link to="/projects" className="hover:underline">
               View projects
-            </Link>
-            <Link to="/admin-login" className="hover:underline">
-              Staff sign in
             </Link>
           </div>
           <div className="flex flex-col gap-2">

@@ -31,6 +31,9 @@ test("project directory filters public cards and keeps reports behind the passwo
       client.getByRole("heading", { name: "Every project. A clearer perspective." }),
     ).toBeVisible();
     await expect(client.locator("main img")).toHaveCount(0);
+    const staffLinks =
+      'a[href*="portal.via-int.com"], a[href^="/admin"], a[href^="/auth/portal"], a[href="/upload"]';
+    await expect(client.locator(staffLinks)).toHaveCount(0);
     await expect(
       client
         .getByRole("navigation", { name: "Main navigation" })
@@ -58,7 +61,7 @@ test("project directory filters public cards and keeps reports behind the passwo
       client
         .getByRole("navigation", { name: "Main navigation" })
         .getByRole("link", { name: "Staff sign in" }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     expect(
       await client.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
@@ -68,6 +71,7 @@ test("project directory filters public cards and keeps reports behind the passwo
       .click();
     await expect(client).toHaveURL(/\/directory-test-school$/);
     await expect(client.locator('input[type="password"]')).toBeVisible();
+    await expect(client.locator(staffLinks)).toHaveCount(0);
     await expect(client.getByRole("heading", { name: "Other VIA projects" })).toBeVisible();
     await expect(
       client.getByRole("link", { name: "View project: Directory Test Hospital", exact: true }),
@@ -96,6 +100,7 @@ test("project directory filters public cards and keeps reports behind the passwo
       client.getByRole("heading", { name: "Every project. A clearer perspective." }),
     ).toBeVisible();
     await expect(client.getByLabel("Search projects")).toBeVisible();
+    await expect(client.locator(staffLinks)).toHaveCount(0);
   } finally {
     await context.close();
   }

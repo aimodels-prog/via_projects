@@ -45,7 +45,7 @@ export function ProjectDirectory() {
             aria-hidden="true"
           />
           <div className="portal-shell portal-hero-content">
-            <p className="portal-kicker">VIA Project Portal</p>
+            <p className="portal-kicker">VIA Projects</p>
             <h1 id="portal-title">
               Every project.
               <br />
