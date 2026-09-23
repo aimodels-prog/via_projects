@@ -2,7 +2,7 @@
 // Dedicated opaque-code integration: no Google or portal signing secrets are shared.
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { Pool } from "pg";
-import { getPortalSession } from "./google-auth";
+import { getPortalSession, isPortalAdmin } from "./google-auth";
 import { getVisibleApps } from "./portal-store";
 
 const pool = new Pool({
@@ -108,5 +108,5 @@ export async function handleProjectsSso(request: Request) {
     await pool.query("UPDATE via_projects_sso SET revoked=true WHERE session_hash=$1", [digest(input.session)]);
     audit("access_revoked", email);
   }
-  return json({ authorized, ...(authorized ? { email, role: "projects-admin" } : {}) });
+  return json({ authorized, ...(authorized ? { email, role: "projects-admin", portalAdmin: isPortalAdmin(email) } : {}) });
 }

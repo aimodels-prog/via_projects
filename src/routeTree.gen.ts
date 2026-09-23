@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as AdminProjectsRouteImport } from './routes/admin-projects'
+import { Route as InternalRouteImport } from './routes/internal'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
@@ -36,6 +37,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/admin-projects',
   path: '/admin-projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InternalRoute = InternalRouteImport.update({
+  id: '/internal',
+  path: '/internal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/admin-login': typeof AdminLoginRoute
   '/admin-projects': typeof AdminProjectsRoute
+  '/internal': typeof InternalRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/upload': typeof UploadRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/$slug': typeof SlugRoute
   '/admin-login': typeof AdminLoginRoute
   '/admin-projects': typeof AdminProjectsRoute
+  '/internal': typeof InternalRoute
   '/upload': typeof UploadRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects': typeof ProjectsIndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/admin-login': typeof AdminLoginRoute
   '/admin-projects': typeof AdminProjectsRoute
+  '/internal': typeof InternalRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/upload': typeof UploadRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin-login'
     | '/admin-projects'
+    | '/internal'
     | '/projects'
     | '/upload'
     | '/projects/$slug'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin-login'
     | '/admin-projects'
+    | '/internal'
     | '/upload'
     | '/projects/$slug'
     | '/projects'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin-login'
     | '/admin-projects'
+    | '/internal'
     | '/projects'
     | '/upload'
     | '/projects/$slug'
@@ -126,6 +138,7 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
+  InternalRoute: typeof InternalRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   UploadRoute: typeof UploadRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/admin-projects'
       fullPath: '/admin-projects'
       preLoaderRoute: typeof AdminProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/internal': {
+      id: '/internal'
+      path: '/internal'
+      fullPath: '/internal'
+      preLoaderRoute: typeof InternalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -210,6 +230,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminProjectsRoute: AdminProjectsRoute,
+  InternalRoute: InternalRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   UploadRoute: UploadRoute,
 }

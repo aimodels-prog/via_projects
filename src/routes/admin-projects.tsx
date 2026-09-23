@@ -12,6 +12,7 @@ import { makeSlug } from "@/lib/report.types";
 import { StatusSignal } from "@/components/StatusSignal";
 import { PlusCircle, Pencil, LogOut, X, Check, ArrowLeft } from "lucide-react";
 import type { ProjectRow } from "@/lib/projects.functions";
+import { InternalDashboardLink } from "@/components/InternalDashboardLink";
 
 const projectsQuery = queryOptions({
   queryKey: ["projects"],
@@ -277,6 +278,7 @@ function AdminProjectsPage() {
             </h1>
           </div>
           <div className="flex items-center gap-4">
+            <InternalDashboardLink />
             <Link to="/upload" className="dashboard-eyebrow text-brand">
               Upload monthly report
             </Link>

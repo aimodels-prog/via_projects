@@ -12,6 +12,20 @@ test("report workspace offers clear starting choices on desktop and mobile", asy
   await upload.click();
   await expect(page.locator("#report-import-panel")).toBeFocused();
   await expect(page.getByLabel("Upload Excel file", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Upload CSV file", { exact: true })).toBeVisible();
+  await expect(page.getByText("JSON file · choose your saved layout")).toHaveCount(0);
+  await expect(page.getByLabel("Completed report CSV", { exact: true })).toBeHidden();
+  await page
+    .locator("#report-import-panel")
+    .screenshot({ path: "test-results/report-import-desktop.png" });
+  await page.getByText("Or paste CSV text instead", { exact: true }).click();
+  await expect(page.getByLabel("Completed report CSV", { exact: true })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByText("Or paste CSV text instead", { exact: true }).click();
+  await page
+    .locator("#report-import-panel")
+    .screenshot({ path: "test-results/report-import-mobile.png" });
   await upload.click();
   await expect(page.locator("#report-import-panel")).toHaveCount(0);
   await page.setViewportSize({ width: 390, height: 844 });

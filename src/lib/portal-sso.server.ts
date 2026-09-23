@@ -33,6 +33,7 @@ export async function portalCall(action: string, input: Record<string, string>) 
     session?: string;
     expires?: number;
     email?: string;
+    portalAdmin?: boolean;
   };
 }
 export async function hasPortalAccess() {

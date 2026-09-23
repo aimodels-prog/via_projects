@@ -31,7 +31,11 @@ export function UploadField({
                 ? "JPG, PNG or WebP · up to 15 MB"
                 : props.accept?.includes("csv")
                   ? "CSV file · fill the downloaded template first"
-                  : "JSON file · choose your saved layout")}
+                  : props.accept?.includes(".xlsx")
+                    ? "Excel file · fill the downloaded template first"
+                    : props.accept?.includes("json")
+                      ? "JSON file · choose your saved layout"
+                      : "Choose a supported file from your device")}
           </p>
           <input
             {...props}

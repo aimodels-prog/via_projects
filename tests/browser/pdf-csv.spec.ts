@@ -77,6 +77,7 @@ test("pasted CSV also opens Photos & layout; invalid CSV stays at import", async
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await page.getByRole("button", { name: "Upload Excel / CSV", exact: true }).click();
   const input = page.getByPlaceholder("Paste your completed PDF report CSV here");
+  await page.getByText("Or paste CSV text instead", { exact: true }).click();
   await input.fill("incorrect header");
   await page.getByRole("button", { name: "Validate pasted CSV", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("CSV header");

@@ -8,6 +8,7 @@ test("one layout upload replaces road controls and is shown in the PDF preview",
   await page.locator('input[type="password"]').fill("test-admin-password");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await page.getByRole("button", { name: "Upload Excel / CSV", exact: true }).click();
+  await page.getByText("Or paste CSV text instead", { exact: true }).click();
   await page
     .getByPlaceholder("Paste your completed PDF report CSV here")
     .fill(

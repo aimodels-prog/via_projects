@@ -26,7 +26,7 @@ services:
     volumes:
       - ./database:/migrations:ro
     networks: [backend]
-    command: ["psql", "-h", "db", "-U", "project_hub", "-d", "project_hub", "-v", "ON_ERROR_STOP=1", "-f", "/migrations/001-project-hub.sql"]
+    command: ["psql", "-h", "db", "-U", "project_hub", "-d", "project_hub", "-v", "ON_ERROR_STOP=1", "-f", "/migrations/001-project-hub.sql", "-f", "/migrations/002-internal-dashboard.sql"]
   app:
     build: .
     image: via-projects:production

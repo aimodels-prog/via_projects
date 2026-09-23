@@ -32,7 +32,9 @@ try {
   const grant=await api('exchange',{code});
   assert.equal(grant.data.authorized,true);
   assert.equal((await api('exchange',{code})).data.authorized,false);
-  assert.equal((await api('access',{session:grant.data.session})).data.authorized,true);
+  const access = (await api('access',{session:grant.data.session})).data;
+  assert.equal(access.authorized,true);
+  assert.equal(access.portalAdmin,false, 'Ordinary Projects staff must not receive Portal administrator access');
   const expiredCode=await launch();
   await db.query("UPDATE via_projects_sso SET code_expires_at=now()-interval '1 minute' WHERE email=$1 AND session_hash IS NULL",[email]);
   assert.equal((await api('exchange',{code:expiredCode})).data.authorized,false);

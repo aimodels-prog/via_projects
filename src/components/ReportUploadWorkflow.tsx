@@ -550,9 +550,13 @@ export function ReportUploadWorkflow() {
                 Download a sample template, replace the figures, then upload your completed file.
               </p>
             </div>
-            <div className="mt-6 grid gap-6 lg:grid-cols-2">
-              <div className="rounded-lg border border-border bg-[#eef1f4] p-5">
-                <h3 className="font-semibold">1. Download and fill in the template</h3>
+            <div className="report-import-grid">
+              <section className="report-template-card" aria-labelledby="template-step-title">
+                <span className="report-import-step">STEP 01 · PREPARE</span>
+                <h3 id="template-step-title">Download your template</h3>
+                <p className="report-import-description">
+                  Choose Excel or CSV. Both include sample figures to guide you.
+                </p>
                 <a
                   href="/templates/pdf-report-template.csv"
                   download="pdf-report-template.csv"
@@ -567,11 +571,9 @@ export function ReportUploadWorkflow() {
                 >
                   <Download size={16} /> Download Excel template
                 </a>
-                <p className="mt-3 rounded border border-amber-300 bg-amber-50 p-3 text-sm">
-                  Both downloads contain sample data to guide you. Replace the sample project
-                  details, figures, contacts and captions before using them for a real report. Blank
-                  optional rows show where information is not applicable. Upload your project
-                  layout, logos and photographs separately in the app.
+                <p className="report-template-note">
+                  <strong>Replace the sample data before uploading.</strong> Leave unknown values
+                  blank, not zero. You’ll add logos, your layout and photographs in the next step.
                 </p>
                 <div className="mt-2 flex gap-4 text-xs underline">
                   <a href="/templates/pdf-report-template-blank.xlsx" download>
@@ -581,70 +583,103 @@ export function ReportUploadWorkflow() {
                     Blank CSV template
                   </a>
                 </div>
-                <ul className="mt-4 list-disc space-y-2 pl-5 text-sm">
-                  <li>
-                    Fill <strong>value</strong> for project details, monthly figures, contract
-                    amounts and photo captions.
-                  </li>
-                  <li>
-                    For activities, enter the name in <strong>field</strong> and percentages in{" "}
-                    <strong>planned</strong> and <strong>actual</strong>.
-                  </li>
-                  <li>
-                    Keep section names, field names and the header unchanged. Leave unknown values
-                    blank, not zero.
-                  </li>
-                  <li>
-                    Dates: YYYY-MM-DD. Numbers: no % sign or currency. Format phone cells as Text to
-                    preserve leading zeros.
-                  </li>
-                  <li>
-                    Upload the logo, map, status drawing and four photographs after importing. No
-                    S-curve image is needed when monthly schedule figures are supplied.
-                  </li>
-                </ul>
-                <p className="mt-4 text-xs text-muted-foreground">
-                  Instructions in the last column explain each row. Empty activity rows are ignored.
-                  Older dashboard CSV files are still accepted.
+                <details className="report-import-help">
+                  <summary>How to fill in the template</summary>
+                  <ul className="mt-4 list-disc space-y-2 pl-5 text-sm">
+                    <li>
+                      Fill <strong>value</strong> for project details, monthly figures, contract
+                      amounts and photo captions.
+                    </li>
+                    <li>
+                      For activities, enter the name in <strong>field</strong> and percentages in{" "}
+                      <strong>planned</strong> and <strong>actual</strong>.
+                    </li>
+                    <li>
+                      Keep section names, field names and the header unchanged. Leave unknown values
+                      blank, not zero.
+                    </li>
+                    <li>
+                      Dates: YYYY-MM-DD. Numbers: no % sign or currency. Format phone cells as Text
+                      to preserve leading zeros.
+                    </li>
+                    <li>
+                      Upload the logo, map, status drawing and four photographs after importing. No
+                      S-curve image is needed when monthly schedule figures are supplied.
+                    </li>
+                  </ul>
+                  <p className="mt-4 text-xs text-muted-foreground">
+                    Instructions in the last column explain each row. Empty activity rows are
+                    ignored. Older dashboard CSV files are still accepted.
+                  </p>
+                </details>
+              </section>
+              <section className="report-file-card" aria-labelledby="upload-step-title">
+                <span className="report-import-step">STEP 02 · UPLOAD</span>
+                <h3 id="upload-step-title">Add your completed spreadsheet</h3>
+                <p className="report-import-description">
+                  Choose one file. We’ll check your figures, then take you to Photos &amp; layout.
                 </p>
-              </div>
-              <div className="border border-border p-5">
-                <div className="dashboard-eyebrow">2. Paste CSV or upload CSV / Excel</div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Monthly schedule figures automatically generate the PDF and dashboard graphs.
-                  Images are uploaded in the next step.
-                </p>
-                <textarea
-                  value={csvText}
-                  onChange={(event) => setCsvText(event.target.value)}
-                  placeholder="Paste your completed PDF report CSV here"
-                  rows={6}
-                  className="mt-3 w-full border border-input p-3 font-mono text-[10px] leading-relaxed outline-none focus:border-brand"
-                />
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="report-file-options">
+                  <div className="report-file-option">
+                    <FileUp aria-hidden="true" size={24} />
+                    <div>
+                      <label htmlFor="report-excel-file">Upload Excel file</label>
+                      <p id="report-excel-help">.xlsx · your completed Excel template</p>
+                      <input
+                        id="report-excel-file"
+                        aria-label="Upload Excel file"
+                        aria-describedby="report-excel-help"
+                        type="file"
+                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        onChange={selectFile}
+                        disabled={working}
+                      />
+                    </div>
+                  </div>
+                  <div className="report-file-option">
+                    <FileUp aria-hidden="true" size={24} />
+                    <div>
+                      <label htmlFor="report-csv-file">Upload CSV file</label>
+                      <p id="report-csv-help">.csv · your completed CSV template</p>
+                      <input
+                        id="report-csv-file"
+                        aria-label="Upload CSV file"
+                        aria-describedby="report-csv-help"
+                        type="file"
+                        accept="text/csv,.csv"
+                        onChange={selectFile}
+                        disabled={working}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <details className="report-paste-option">
+                  <summary>Or paste CSV text instead</summary>
+                  <label htmlFor="report-csv-text" className="sr-only">
+                    Completed report CSV
+                  </label>
+                  <textarea
+                    id="report-csv-text"
+                    value={csvText}
+                    onChange={(event) => setCsvText(event.target.value)}
+                    placeholder="Paste your completed PDF report CSV here"
+                    rows={6}
+                    className="mt-3 w-full border border-input p-3 font-mono text-[10px] leading-relaxed outline-none focus:border-brand"
+                  />
                   <button
                     type="button"
                     onClick={() => processCsv(csvText)}
-                    disabled={!csvText.trim()}
-                    className="h-11 bg-brand px-4 font-mono text-[9px] font-bold uppercase tracking-widest text-white disabled:opacity-40"
+                    disabled={!csvText.trim() || working}
+                    className="report-validate-button"
                   >
                     Validate pasted CSV
                   </button>
-                  <div className="w-full min-w-0">
-                    Upload CSV file
-                    <UploadField
-                      aria-label="Upload CSV file"
-                      accept="text/csv,.csv"
-                      onChange={selectFile}
-                    />
-                    <UploadField
-                      aria-label="Upload Excel file"
-                      accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                      onChange={selectFile}
-                    />
-                  </div>
-                </div>
-              </div>
+                </details>
+                <p className="report-import-footnote">
+                  Monthly schedule figures generate your graphs automatically. Images are added
+                  separately.
+                </p>
+              </section>
             </div>
             {working && (
               <div className="mt-4 h-1 bg-border">
