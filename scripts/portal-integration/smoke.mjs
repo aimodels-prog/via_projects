@@ -23,7 +23,7 @@ async function api(action, data, key=process.env.PROJECTS_SSO_KEY) {
   return {status:response.status, data:await response.json()};
 }
 try {
-  await db.query(`INSERT INTO "StaffProfile" (id,email,name,"jobTitle",status,"allowedAppIds","updatedAt") VALUES ($1,$2,'SSO verification','Staff','active',$3,now())`, [id,email,[app.id]]);
+  await db.query(`INSERT INTO "StaffProfile" (id,email,name,"jobTitle",status,"allowedAppIds","accessConfigured","updatedAt") VALUES ($1,$2,'SSO verification','Staff','active',$3,true,now())`, [id,email,[app.id]]);
   const unsigned = await fetch(`${base}/sso/projects?state=${state}`,{redirect:'manual'});
   assert.equal(unsigned.status,302);
   assert.ok(unsigned.headers.get('location').startsWith('/auth/signin'));
@@ -52,8 +52,11 @@ try {
   assert.equal(out.status,302);
   assert.equal((await api('access',{session:third.data.session})).data.authorized,false);
   console.log('PASS: login, wrong service key, one-use codes, expired codes, access removal, reassignment, app logout and portal logout.');
+} catch (error) {
+  console.error('SSO smoke failed:', error.message);
+  throw error;
 } finally {
-  await db.query('DELETE FROM via_projects_sso WHERE email=$1',[email]);
+  await db.query('DELETE FROM via_projects_sso WHERE email=$1',[email]).catch((error) => { if (error.code !== '42P01') throw error; });
   await db.query('DELETE FROM "StaffProfile" WHERE id=$1 AND email=$2',[id,email]);
   await db.end();
   console.log('Synthetic test staff and grants removed; no real staff records changed.');
