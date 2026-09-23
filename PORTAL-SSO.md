@@ -1,8 +1,9 @@
 # VIA Portal staff access
 
 Production mode: `PROJECT_AUTH_MODE=portal`. Local development retains password mode.
-Clients keep the public project directory and per-project passwords. Staff choose
-Staff sign in, or open the VIA Projects tile at portal.via-int.com. Only active
+Clients keep the public project directory and per-project passwords. Public pages
+do not expose staff sign-in, admin, or portal links. Staff open the VIA Projects
+tile at portal.via-int.com. Legacy admin URLs still require portal authentication. Only active
 staff assigned Projects may enter; all assigned staff receive project administration
 permissions, as requested. Portal administrators control assignments.
 
