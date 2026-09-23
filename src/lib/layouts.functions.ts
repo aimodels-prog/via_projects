@@ -17,7 +17,7 @@ const root = () => resolve(process.env["PROJECT_DATA_DIR"] || ".data/projects", 
 export const saveProjectLayout = createServerFn({ method: "POST" })
   .validator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     if (!data.schematic.approved || !data.schematic.segments.length)
       throw new Error("Review and approve the drawing before saving its layout template.");
     const schematic = {
@@ -40,7 +40,7 @@ export const saveProjectLayout = createServerFn({ method: "POST" })
 export const loadProjectLayout = createServerFn({ method: "GET" })
   .validator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     setResponseHeader("Cache-Control", "private, no-store");
     try {
       return schema.parse(JSON.parse(await readFile(join(root(), `${data.id}.json`), "utf8")));

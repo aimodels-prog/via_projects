@@ -24,8 +24,13 @@ const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
 });
 
+const portalMiddleware = createMiddleware().server(async ({ request, next }) => {
+  const { handlePortalRequest } = await import("./lib/portal-sso.server");
+  return (await handlePortalRequest(request)) ?? next();
+});
+
 export const startInstance = createStart(() => ({
   // Internal/client authentication is enforced by signed, HttpOnly server cookies.
   // Do not initialise a Supabase browser session on the standalone PostgreSQL deployment.
-  requestMiddleware: [errorMiddleware, csrfMiddleware],
+  requestMiddleware: [errorMiddleware, csrfMiddleware, portalMiddleware],
 }));

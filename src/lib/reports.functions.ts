@@ -61,7 +61,7 @@ async function verifyImages(report: ExtractedReport) {
 export const previewProjectReport = createServerFn({ method: "POST" })
   .validator((input: unknown) => reportSchema.parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     setResponseHeader("Cache-Control", "private, no-store");
     const issues = validateReport(data);
     if (issues.length) throw new Error(issues.join(" "));
@@ -76,7 +76,7 @@ export const previewProjectReport = createServerFn({ method: "POST" })
 export const generateSalalahPdf = createServerFn({ method: "POST" })
   .validator((input: unknown) => reportSchema.parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     setResponseHeader("Cache-Control", "private, no-store");
     const { buildSalalahPdf } = await import("./salalah-pdf.server");
     return { base64: Buffer.from(await buildSalalahPdf(data)).toString("base64") };
@@ -95,7 +95,7 @@ const publishSchema = z.object({
 export const publishProjectReport = createServerFn({ method: "POST" })
   .validator((input: unknown) => publishSchema.parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     const { requireActiveProject } = await import("./project-deletion.server");
     await requireActiveProject(data.report.slug);
     if (

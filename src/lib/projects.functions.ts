@@ -55,7 +55,7 @@ export const listProjects = createServerFn({ method: "GET" }).handler(async () =
       projects.map(async (p) => ((await isProjectDeleted(p.slug)) ? null : p)),
     );
     projects = active.filter((p): p is ProjectRow => p !== null);
-    return hasAdminAccess()
+    return (await hasAdminAccess())
       ? projects
       : projects.map((project) => ({
           ...project,
@@ -107,8 +107,8 @@ export const getProject = createServerFn({ method: "GET" })
     if (await isProjectDeleted(data.slug)) return null;
     setResponseHeader("Cache-Control", "private, no-store");
     setResponseHeader("Vary", "Cookie");
-    const visible = (project: ProjectRow) =>
-      hasAdminAccess()
+    const visible = async (project: ProjectRow) =>
+      (await hasAdminAccess())
         ? project
         : {
             ...project,
@@ -181,7 +181,7 @@ export const deleteProject = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-auth.server");
-    requireAdmin();
+    await requireAdmin();
     if (data.confirmation !== data.slug)
       throw new Error("Type the exact project URL slug to confirm deletion.");
     const project = await getProject({ data: { slug: data.slug } });
@@ -195,7 +195,7 @@ export const createProject = createServerFn({ method: "POST" })
   .validator((input: unknown) => projectInputSchema.parse(input))
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-auth.server");
-    requireAdmin();
+    await requireAdmin();
     await requireActiveProject(data.slug);
     const { database, usesPostgres } = await import("./postgres.server");
     if (usesPostgres() || !process.env["SUPABASE_SERVICE_ROLE_KEY"]) {
@@ -248,7 +248,7 @@ export const updateProject = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-auth.server");
-    requireAdmin();
+    await requireAdmin();
     await requireActiveProject(data.slug);
     const { database, usesPostgres } = await import("./postgres.server");
     if (!usesPostgres() && !process.env["SUPABASE_SERVICE_ROLE_KEY"]) {

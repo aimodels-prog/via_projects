@@ -1,5 +1,16 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { CheckCircle2, Download, FileUp, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  Download,
+  FileUp,
+  ShieldCheck,
+  ArrowRight,
+  ArrowUpRight,
+  FolderOpen,
+  PenLine,
+  Save,
+  LockKeyhole,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { parseReportCsv } from "@/lib/pdf-report-csv";
 import { publishProjectReport, previewProjectReport } from "@/lib/reports.functions";
@@ -16,6 +27,9 @@ import { photoPresentation, PDF_PHOTO_RATIOS } from "@/lib/image-fit";
 import { SourceReportFields } from "./SourceReportFields";
 import { MonthlyReportFields } from "./MonthlyReportFields";
 import { saveReportDraft, listReportDrafts, loadReportDraft } from "@/lib/drafts.functions";
+
+import viaLogo from "@/assets/via-official-logo.png";
+import "./report-workspace.css";
 
 function fileToDataUrl(file: File) {
   return new Promise<string>((resolve, reject) => {
@@ -75,6 +89,13 @@ export function ReportUploadWorkflow() {
   const [file, setFile] = useState<File | null>(null);
   const [report, setReport] = useState<ExtractedReport | null>(null);
   const [step, setStep] = useState(0);
+  const [importOpen, setImportOpen] = useState(false);
+  const importPanel = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (importOpen && !report) importPanel.current?.focus({ preventScroll: true });
+  }, [importOpen, report]);
+  const [draftsLoaded, setDraftsLoaded] = useState(false);
+  const [draftsLoading, setDraftsLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [focusCsvStep, setFocusCsvStep] = useState(false);
   useEffect(() => {
@@ -84,7 +105,7 @@ export function ReportUploadWorkflow() {
     navigation?.scrollIntoView({ behavior: "auto", block: "start" });
     setFocusCsvStep(false);
   }, [focusCsvStep, report]);
-  const steps = ["Project setup", "Monthly update", "Photos & layout", "PDF & client access"];
+  const steps = ["Project details", "Monthly figures", "Photos & layout", "Review & publish"];
   const goToStep = (next: number) => {
     setStep(next);
     document.getElementById("report-steps")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -296,120 +317,205 @@ export function ReportUploadWorkflow() {
   }
 
   return (
-    <main className="min-h-screen bg-[#eef1f4]">
-      <header className="border-b border-brand/30 bg-white">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-5">
-          <div>
-            <div className="dashboard-eyebrow text-signal-alert">Project reporting</div>
-            <h1 className="mt-1 text-2xl font-black uppercase tracking-tight text-brand">
-              Project setup & monthly reports
-            </h1>
-          </div>
-          <Link to="/projects" className="dashboard-eyebrow text-brand hover:text-signal-alert">
-            Cancel
+    <main className="report-workspace">
+      <header className="report-topbar">
+        <div className="report-container report-topbar-inner">
+          <Link to="/" aria-label="VIA project portal">
+            <img src={viaLogo} width={2048} height={766} alt="VIA International" />
           </Link>
+          <nav aria-label="Staff navigation">
+            <Link to="/admin-projects">Manage projects</Link>
+            <Link to="/projects">
+              View portal <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
+          </nav>
         </div>
       </header>
+      <div className="report-container report-page-heading">
+        <p className="report-eyebrow">
+          <LockKeyhole size={13} aria-hidden="true" /> VIA / STAFF WORKSPACE
+        </p>
+        <h1>{report ? "Build your project report." : "Create a project report."}</h1>
+        <p>
+          {report
+            ? "Work through each step, then review before sharing with your client."
+            : "From project figures to a clear, client-ready report. Choose how you want to begin."}
+        </p>
+      </div>
 
       <div
-        className="mx-auto max-w-[1600px] px-6 py-8"
+        className="report-container report-content"
         inert={!editorReady}
         aria-busy={!editorReady}
       >
-        <div className="sticky top-0 z-30 mb-4 flex flex-wrap gap-3 rounded-lg border bg-white p-3 text-sm shadow-sm">
-          <button
-            type="button"
-            className="border p-2"
-            onClick={async () => {
-              try {
-                setDrafts(await listReportDrafts());
-              } catch (e) {
-                setError(e instanceof Error ? e.message : "Cannot load drafts");
-              }
-            }}
-          >
-            Load saved internal drafts
-          </button>
-          {report && (
-            <button
-              type="button"
-              className="border p-2"
-              onClick={async () => {
-                try {
-                  await saveReportDraft({
-                    data: { report, csv: csvText, fileName: file?.name || "manual-report.json" },
-                  });
-                  setError(
-                    "Draft saved securely on the server. Client passwords are not saved in drafts.",
-                  );
-                } catch (e) {
-                  setError(e instanceof Error ? e.message : "Cannot save draft");
-                }
-              }}
-            >
-              Save draft
-            </button>
-          )}
-          {drafts.length > 0 && (
-            <select
-              aria-label="Saved draft"
-              defaultValue=""
-              onChange={async (e) => {
-                if (!e.target.value) return;
-                try {
-                  const saved = await loadReportDraft({ data: { id: e.target.value } });
-                  setReport(saved.report);
+        {!report && (
+          <section className="report-start" aria-labelledby="start-heading">
+            <div className="report-section-heading">
+              <span className="report-eyebrow">LET’S GET STARTED</span>
+              <h2 id="start-heading">How would you like to begin?</h2>
+            </div>
+            <div className="report-choice-grid">
+              <button
+                type="button"
+                className="report-choice report-choice-featured"
+                aria-label="Upload Excel / CSV"
+                aria-expanded={importOpen}
+                aria-controls="report-import-panel"
+                onClick={() => setImportOpen((v) => !v)}
+              >
+                <span className="report-choice-top">
+                  <span className="report-choice-icon">
+                    <FileUp size={24} aria-hidden="true" />
+                  </span>
+                  <span className="report-choice-tag">HAVE YOUR FIGURES READY?</span>
+                </span>
+                <span className="report-choice-title">Upload Excel / CSV</span>
+                <span className="report-choice-description">
+                  Use our ready-to-fill template. Import your figures, then add your photographs and
+                  layout.
+                </span>
+                <span className="report-choice-bottom">
+                  {importOpen ? "Close import options" : "Choose a file or get the template"}
+                  <ArrowRight size={19} aria-hidden="true" />
+                </span>
+              </button>
+              <button
+                type="button"
+                className="report-choice"
+                aria-label="Enter details manually"
+                onClick={() => {
+                  setReport(newManualReport());
                   setStep(0);
                   setShowAll(false);
-                  setCsvText(saved.csv);
-                  setFile(
-                    saved.fileName.endsWith(".json")
-                      ? null
-                      : new File([saved.csv], saved.fileName, { type: "text/csv" }),
-                  );
-                  setPreview(null);
-                  setApproved(false);
+                  setFile(null);
+                  setCsvText("");
+                  setError("");
+                }}
+              >
+                <span className="report-choice-top">
+                  <span className="report-choice-icon">
+                    <PenLine size={24} aria-hidden="true" />
+                  </span>
+                  <span className="report-choice-tag">START FROM SCRATCH</span>
+                </span>
+                <span className="report-choice-title">Enter details manually</span>
+                <span className="report-choice-description">
+                  Add your project details step by step. No spreadsheet needed, and you can save at
+                  any time.
+                </span>
+                <span className="report-choice-bottom">
+                  Start a new report
+                  <ArrowRight size={19} aria-hidden="true" />
+                </span>
+              </button>
+            </div>
+            <ol className="report-journey" aria-label="Your report journey">
+              {steps.map((label, i) => (
+                <li key={label}>
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                  {label}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+        <section
+          className={report ? "report-drafts report-drafts-editing" : "report-drafts"}
+          aria-label="Saved drafts"
+        >
+          <div className="report-drafts-intro">
+            <FolderOpen size={22} aria-hidden="true" />
+            <div>
+              <h2>{report ? "Save your progress" : "Continue a saved draft"}</h2>
+              <p>
+                {report
+                  ? "Save before leaving. Drafts are visible only to staff."
+                  : "Pick up where you left off. Nothing is shared with clients until you publish."}
+              </p>
+            </div>
+          </div>
+          <div className="report-draft-actions">
+            <button
+              type="button"
+              className="report-secondary-button"
+              disabled={draftsLoading}
+              onClick={async () => {
+                try {
+                  setDraftsLoading(true);
+                  setDrafts(await listReportDrafts());
+                  setDraftsLoaded(true);
                 } catch (e) {
-                  setError(e instanceof Error ? e.message : "Cannot restore draft");
+                  setError(e instanceof Error ? e.message : "Cannot load drafts");
+                } finally {
+                  setDraftsLoading(false);
                 }
               }}
             >
-              <option value="">Select saved draft</option>
-              {drafts.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} — {d.savedAt}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-        {!report && (
-          <section className="mb-6 rounded-xl border bg-white p-6">
-            <h2 className="text-xl font-bold text-brand">Create your report</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Start with the project details. Add this month’s figures and pictures, then download
-              your PDF. You can save and finish later.
-            </p>
-            <button
-              type="button"
-              className="my-4 bg-brand p-3 text-white"
-              onClick={() => {
-                setReport(newManualReport());
-                setStep(0);
-                setShowAll(false);
-                setFile(null);
-                setCsvText("");
-                setError("");
-              }}
-            >
-              Start project manually — no CSV required
+              Load saved internal drafts
             </button>
-          </section>
-        )}
+            {report && (
+              <button
+                type="button"
+                className="report-primary-button"
+                onClick={async () => {
+                  try {
+                    await saveReportDraft({
+                      data: { report, csv: csvText, fileName: file?.name || "manual-report.json" },
+                    });
+                    setError(
+                      "Draft saved securely on the server. Client passwords are not saved in drafts.",
+                    );
+                  } catch (e) {
+                    setError(e instanceof Error ? e.message : "Cannot save draft");
+                  }
+                }}
+              >
+                <Save size={15} aria-hidden="true" /> Save draft
+              </button>
+            )}
+            {drafts.length > 0 && (
+              <select
+                aria-label="Saved draft"
+                defaultValue=""
+                onChange={async (e) => {
+                  if (!e.target.value) return;
+                  try {
+                    const saved = await loadReportDraft({ data: { id: e.target.value } });
+                    setReport(saved.report);
+                    setStep(0);
+                    setShowAll(false);
+                    setCsvText(saved.csv);
+                    setFile(
+                      saved.fileName.endsWith(".json")
+                        ? null
+                        : new File([saved.csv], saved.fileName, { type: "text/csv" }),
+                    );
+                    setPreview(null);
+                    setApproved(false);
+                  } catch (e) {
+                    setError(e instanceof Error ? e.message : "Cannot restore draft");
+                  }
+                }}
+              >
+                <option value="">Select saved draft</option>
+                {drafts.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} — {d.savedAt}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          {draftsLoaded && !drafts.length && (
+            <p role="status" className="report-drafts-empty">
+              No saved drafts yet. Start a report and use Save draft whenever you need a break.
+            </p>
+          )}
+        </section>
         {report && (
           <button
             type="button"
-            className="my-3 border p-3"
+            className="report-next-month"
             onClick={() => {
               if (
                 window.confirm(
@@ -429,29 +535,22 @@ export function ReportUploadWorkflow() {
             Start next month from this project setup
           </button>
         )}
-        {report && error && (
+        {error && (
           <p role="alert" className="mb-4 rounded border bg-white p-3 text-sm">
             {error}
           </p>
         )}
 
-        {!report && (
-          <details className="mx-auto max-w-5xl rounded-xl border border-border bg-white p-6">
-            <summary className="cursor-pointer font-semibold text-brand">
-              Fill from a CSV template
-            </summary>
-            <div className="grid size-14 place-items-center bg-brand text-white">
-              <FileUp size={24} />
+        {!report && importOpen && (
+          <div id="report-import-panel" ref={importPanel} tabIndex={-1} className="report-import">
+            <div className="report-section-heading">
+              <span className="report-eyebrow">IMPORT YOUR FIGURES</span>
+              <h2>Start with your spreadsheet.</h2>
+              <p>
+                Download a sample template, replace the figures, then upload your completed file.
+              </p>
             </div>
-            <h2 className="mt-8 text-3xl font-bold tracking-tight text-brand">
-              Create your PDF and dashboard from Excel or CSV
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Fill the sectioned Excel workbook and upload the whole .xlsx file, or use CSV UTF-8.
-              Monthly schedule figures generate both graphs automatically. Add your images, then
-              review the PDF and dashboard. No NotebookLM needed.
-            </p>{" "}
-            <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
               <div className="rounded-lg border border-border bg-[#eef1f4] p-5">
                 <h3 className="font-semibold">1. Download and fill in the template</h3>
                 <a
@@ -519,7 +618,7 @@ export function ReportUploadWorkflow() {
                   value={csvText}
                   onChange={(event) => setCsvText(event.target.value)}
                   placeholder="Paste your completed PDF report CSV here"
-                  rows={15}
+                  rows={6}
                   className="mt-3 w-full border border-input p-3 font-mono text-[10px] leading-relaxed outline-none focus:border-brand"
                 />
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -555,21 +654,16 @@ export function ReportUploadWorkflow() {
                 />
               </div>
             )}
-            {error && (
-              <p role="alert" className="mt-4 text-sm text-signal-alert">
-                {error}
-              </p>
-            )}
-          </details>
+          </div>
         )}
 
         {report && (
-          <div className="mx-auto max-w-5xl space-y-5">
+          <div className="report-editor space-y-5">
             <nav
               id="report-steps"
               tabIndex={-1}
               aria-label="Report steps"
-              className="scroll-mt-24 rounded-xl border bg-white p-4"
+              className="report-stepper scroll-mt-24"
             >
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-semibold">
@@ -605,7 +699,7 @@ export function ReportUploadWorkflow() {
               </p>
             </nav>
 
-            <section className="border border-border bg-white p-6 md:p-8">
+            <section className="report-editor-panel">
               <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
                 <div>
                   <div className="dashboard-eyebrow text-signal-ok">
@@ -1517,7 +1611,7 @@ export function ReportUploadWorkflow() {
                 </details>
               </div>
               {!showAll && (
-                <div className="mt-8 flex items-center justify-between gap-3 border-t pt-5">
+                <div className="report-step-actions">
                   <button
                     type="button"
                     disabled={step === 0}
@@ -1533,7 +1627,7 @@ export function ReportUploadWorkflow() {
                       onClick={() => goToStep(step + 1)}
                       className="rounded bg-brand px-5 py-3 text-sm text-white"
                     >
-                      Next: {steps[step + 1]}
+                      Continue: {steps[step + 1]}
                     </button>
                   ) : (
                     <button

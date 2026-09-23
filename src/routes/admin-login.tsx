@@ -7,6 +7,7 @@ export const Route = createFileRoute("/admin-login")({
   loader: async () => {
     const access = await getAdminAccess();
     if (access.authorized) throw redirect({ to: "/upload" });
+    if (access.portal) throw redirect({ href: "/auth/portal/start" });
     return {};
   },
   head: () => ({

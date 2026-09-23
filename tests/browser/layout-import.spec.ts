@@ -7,7 +7,7 @@ test("one layout upload replaces road controls and is shown in the PDF preview",
   await page.goto("/upload");
   await page.locator('input[type="password"]').fill("test-admin-password");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await page.getByText("Fill from a CSV template", { exact: true }).click();
+  await page.getByRole("button", { name: "Upload Excel / CSV", exact: true }).click();
   await page
     .getByPlaceholder("Paste your completed PDF report CSV here")
     .fill(
@@ -23,7 +23,7 @@ test("one layout upload replaces road controls and is shown in the PDF preview",
   const layout = page.getByAltText("Project layout", { exact: true });
   await expect(layout).toBeVisible();
   const src = await layout.getAttribute("src");
-  await page.getByRole("button", { name: "4. PDF & client access", exact: true }).click();
+  await page.getByRole("button", { name: "4. Review & publish", exact: true }).click();
   await expect(page.getByAltText("PDF project map framing preview")).toHaveAttribute("src", src!);
   await expect(page.getByLabel("PDF map image fit", { exact: true })).toHaveValue("contain");
 });

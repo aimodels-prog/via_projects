@@ -23,6 +23,10 @@ export default defineConfig({
       SUPABASE_URL: "",
       SUPABASE_SERVICE_ROLE_KEY: "",
       SUPABASE_PUBLISHABLE_KEY: "",
+      PROJECT_AUTH_MODE: process.env.E2E_SSO === "1" ? "portal" : "password",
+      PROJECTS_SSO_KEY: "test-integration-key-not-for-production-0123456789",
+      PROJECTS_PORTAL_INTERNAL_URL: `http://127.0.0.1:${port + 1}`,
+      PROJECTS_TEST_PORTAL_URL: `http://127.0.0.1:${port + 1}`,
     },
   },
 });

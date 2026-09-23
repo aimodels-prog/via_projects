@@ -14,7 +14,7 @@ test("internal approval, exact preview, client gate and private report", async (
   await page.locator('input[type="password"]').fill("test-admin-password");
   await page.getByRole("button", { name: /sign in|log in|unlock/i }).click();
   await expect(page).toHaveURL(/\/upload$/);
-  await page.getByText("Fill from a CSV template", { exact: true }).click();
+  await page.getByRole("button", { name: "Upload Excel / CSV", exact: true }).click();
   await page.locator('input[accept="text/csv,.csv"]').setInputFiles({
     name: "report.csv",
     mimeType: "text/csv",
@@ -176,17 +176,15 @@ test("manual project setup can be saved and restored before monthly values exist
   await page.goto("/upload");
   await page.locator('input[type="password"]').fill("test-admin-password");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Start project manually — no CSV required", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Enter details manually", exact: true }).click();
   await page.getByLabel("Project name", { exact: true }).fill("Manual setup only");
   await page.screenshot({ path: "test-results/simple-report-steps.png" });
   await expect(page.getByLabel("Caption for photo 1", { exact: true })).toBeHidden();
-  await page.getByRole("button", { name: "Next: Monthly update", exact: true }).click();
+  await page.getByRole("button", { name: "Continue: Monthly figures", exact: true }).click();
   await expect(page.getByLabel("Project name", { exact: true })).toBeHidden();
-  await page.getByRole("button", { name: "Next: Photos & layout", exact: true }).click();
+  await page.getByRole("button", { name: "Continue: Photos & layout", exact: true }).click();
   await expect(page.getByLabel("Caption for photo 1", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Next: PDF & client access", exact: true }).click();
+  await page.getByRole("button", { name: "Continue: Review & publish", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Generate A4 PDF preview", exact: true }),
   ).toBeVisible();
@@ -205,7 +203,7 @@ test("manual project setup can be saved and restored before monthly values exist
     page.getByLabel("Cumulative actual physical progress %", { exact: true }),
   ).toHaveValue("");
   await page.getByLabel("Construction period (days)", { exact: true }).fill("912");
-  await page.getByRole("button", { name: "Next: Monthly update", exact: true }).click();
+  await page.getByRole("button", { name: "Continue: Monthly figures", exact: true }).click();
   await page.getByLabel("Data as of", { exact: true }).fill("2026-07-31");
   await expect(page.getByText("July 2026", { exact: true })).toBeVisible();
   await page.getByLabel("Cumulative planned physical progress %", { exact: true }).fill("47.95");
@@ -216,7 +214,7 @@ test("manual project setup can be saved and restored before monthly values exist
   await page.getByLabel("Planned financial progress %", { exact: true }).fill("46.539");
   await page.getByLabel("Actual financial progress %", { exact: true }).fill("33.38");
   await expect(page.getByText("Difference (calculated): -13.159", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "2. Monthly update", exact: true }).click();
+  await page.getByRole("button", { name: "2. Monthly figures", exact: true }).click();
   await page.screenshot({ path: "test-results/monthly-update.png" });
   page.once("dialog", (dialog) => dialog.accept());
   await page

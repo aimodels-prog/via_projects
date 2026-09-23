@@ -10,6 +10,7 @@ import { z } from "zod";
 import { credentialVersion, issueToken, verifyToken } from "./session-token";
 import { ADMIN_COOKIE, adminPassword, hasAdminAccess } from "./admin-auth.server";
 import { isProjectDeleted } from "./project-deletion.server";
+import { logoutPortal, portalEnabled } from "./portal-sso.server";
 
 const MAX_AGE = 60 * 60 * 12;
 const failures = new Map<string, { count: number; reset: number }>();
@@ -121,7 +122,7 @@ async function accessVersion(slug: string) {
 
 async function hasAccess(slug: string) {
   if (await isProjectDeleted(slug)) return false;
-  if (hasAdminAccess()) return true;
+  if (await hasAdminAccess()) return true;
   return verifyToken(getCookie(cookieName(slug)), `client:${slug}`, await accessVersion(slug));
 }
 
@@ -268,9 +269,9 @@ export const getProtectedDashboardHtml = createServerFn({ method: "GET" })
 
 // ─── Admin authentication ──────────────────────────────────────────────────
 
-export const getAdminAccess = createServerFn({ method: "GET" }).handler(() => {
+export const getAdminAccess = createServerFn({ method: "GET" }).handler(async () => {
   privateResponseHeaders();
-  return { authorized: hasAdminAccess() };
+  return { authorized: await hasAdminAccess(), portal: portalEnabled() };
 });
 
 export const loginAdmin = createServerFn({ method: "POST" })
@@ -294,8 +295,9 @@ export const loginAdmin = createServerFn({ method: "POST" })
     return { authorized: true };
   });
 
-export const logoutAdmin = createServerFn({ method: "POST" }).handler(() => {
+export const logoutAdmin = createServerFn({ method: "POST" }).handler(async () => {
   privateResponseHeaders();
+  if (portalEnabled()) await logoutPortal();
   setCookie(ADMIN_COOKIE, "", { path: "/", maxAge: 0 });
   return { ok: true };
 });

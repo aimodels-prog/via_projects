@@ -15,7 +15,7 @@ const schema = z.object({
 export const saveReportDraft = createServerFn({ method: "POST" })
   .validator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     const id = randomUUID();
     await mkdir(root(), { recursive: true, mode: 0o700 });
     await writeFile(
@@ -26,7 +26,7 @@ export const saveReportDraft = createServerFn({ method: "POST" })
     return { id };
   });
 export const listReportDrafts = createServerFn({ method: "GET" }).handler(async () => {
-  requireAdmin();
+  await requireAdmin();
   setResponseHeader("Cache-Control", "private, no-store");
   let files: string[];
   try {
@@ -52,7 +52,7 @@ export const listReportDrafts = createServerFn({ method: "GET" }).handler(async 
 export const loadReportDraft = createServerFn({ method: "GET" })
   .validator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
-    requireAdmin();
+    await requireAdmin();
     setResponseHeader("Cache-Control", "private, no-store");
     return schema.parse(JSON.parse(await readFile(join(root(), `${data.id}.json`), "utf8")));
   });

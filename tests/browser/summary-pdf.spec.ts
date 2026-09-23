@@ -10,7 +10,7 @@ test("PDF-summary CSV keeps the fixed Raysut dashboard and editable missing fiel
   await page.goto("/upload");
   await page.locator('input[type="password"]').fill("test-admin-password");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await page.getByText("Fill from a CSV template", { exact: true }).click();
+  await page.getByRole("button", { name: "Upload Excel / CSV", exact: true }).click();
   await page.locator('input[accept="text/csv,.csv"]').setInputFiles({
     name: "mughsayl.csv",
     mimeType: "text/csv",
