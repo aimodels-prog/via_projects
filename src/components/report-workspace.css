@@ -294,6 +294,108 @@
   border-radius: 12px;
   scroll-margin-top: 20px;
 }
+.csv-review-dialog {
+  background: #fff;
+  animation: none;
+  transition: none;
+  width: min(1080px, calc(100vw - 24px));
+  max-width: 1080px;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+}
+.csv-review-toolbar,
+.csv-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.csv-review-toolbar input {
+  margin-right: 6px;
+}
+.csv-review-scroll {
+  overflow-y: auto;
+  min-height: 0;
+}
+.csv-review-row {
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #dce5ec;
+  border-radius: 8px;
+}
+.csv-review-row h3 {
+  color: #07558f;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.csv-review-row p {
+  font-size: 12px;
+  color: #587083;
+  margin-top: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.csv-review-cells {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.csv-review-cells label {
+  font-size: 11px;
+  color: #587083;
+}
+.csv-review-cells input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #b9cbd8;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 5px;
+  font-size: 13px;
+  color: #153b56;
+}
+.csv-review-cells input:read-only {
+  background: #f1f5f8;
+}
+.csv-review-cells .csv-review-missing {
+  background: #fff9e9;
+  border-color: #dca74d;
+}
+.csv-review-message {
+  background: #fff9e9;
+  padding: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  max-height: 130px;
+  overflow: auto;
+  font-size: 13px;
+}
+.csv-review-actions button {
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #07558f;
+  color: #07558f;
+  font-size: 14px;
+  font-weight: 600;
+}
+.csv-review-actions button:last-child {
+  background: #07558f;
+  color: white;
+}
+.csv-review-actions button:disabled {
+  opacity: 0.5;
+}
+@media (max-width: 650px) {
+  .csv-review-cells {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .report-import textarea {
   min-height: 140px;
   border-radius: 6px;
@@ -313,6 +415,78 @@
   gap: 24px;
   align-items: start;
   margin-top: 28px;
+}
+.report-notebook-guide {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #b9d1e3;
+  border-radius: 12px;
+  background: #f2f8fc;
+}
+.report-notebook-guide h3 {
+  margin-top: 8px;
+  font-size: 19px;
+  font-weight: 700;
+}
+.report-notebook-guide p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #47687f;
+}
+.report-notebook-guide small {
+  display: block;
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #587083;
+}
+.report-notebook-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.report-notebook-actions a,
+.report-notebook-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 16px;
+  border: 1px solid #07558f;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #07558f;
+  background: white;
+}
+.report-notebook-actions button {
+  background: #07558f;
+  color: white;
+}
+.report-notebook-toggle {
+  display: block;
+  margin-top: 14px;
+  min-height: 44px;
+  font-size: 13px;
+  color: #07558f;
+  text-decoration: underline;
+}
+.report-notebook-guide textarea {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: 1px solid #b9d1e3;
+}
+@media (max-width: 480px) {
+  .report-notebook-guide {
+    padding: 18px;
+  }
+  .report-notebook-actions > * {
+    width: 100%;
+  }
 }
 .report-template-card,
 .report-file-card {

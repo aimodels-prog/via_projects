@@ -18,6 +18,9 @@ import type { ExtractedReport } from "@/lib/report.types";
 import { newManualReport, nextMonthlyReport, manualSource } from "@/lib/manual-report";
 import { makeSlug, validateReport, dashboardCoverageWarnings } from "@/lib/report.types";
 import { UploadField } from "./UploadField";
+import { CsvImportReview } from "./CsvImportReview";
+import { NotebookReportGuide } from "./NotebookReportGuide";
+import { reviewCsvRows, missingReviewCells } from "@/lib/csv-import-review";
 import { HeaderLogosEditor } from "./HeaderLogosEditor";
 import { ReportDetails } from "./ReportDetails";
 import { ProgressScheduleEditor } from "./ProgressScheduleEditor";
@@ -114,6 +117,11 @@ export function ReportUploadWorkflow() {
   useEffect(() => setEditorReady(true), []);
   const [drafts, setDrafts] = useState<Array<{ id: string; name: string; savedAt: string }>>([]);
   const [csvText, setCsvText] = useState("");
+  const [csvReview, setCsvReview] = useState<{
+    rows: string[][];
+    error: string;
+    fileName: string;
+  } | null>(null);
   const [progress, setProgress] = useState({ message: "", percent: 0 });
   const [working, setWorking] = useState(false);
   const [error, setError] = useState("");
@@ -158,6 +166,12 @@ export function ReportUploadWorkflow() {
     setCsvText(text);
     setPreview(null);
     try {
+      const rows = reviewCsvRows(text);
+      if (rows && rows.slice(1).some((row) => missingReviewCells(row).length)) {
+        setReport(null);
+        setCsvReview({ rows, error: "", fileName: selectedFile?.name || "pdf-report-data.csv" });
+        return;
+      }
       const parsed = parseReportCsv(text);
       parsed.printLayoutMode = "image";
       parsed.useRaysutReferenceLayout = false;
@@ -169,6 +183,15 @@ export function ReportUploadWorkflow() {
       setFocusCsvStep(true);
     } catch (caught) {
       setReport(null);
+      const rows = reviewCsvRows(text);
+      if (rows) {
+        setCsvReview({
+          rows,
+          error: caught instanceof Error ? caught.message : "Review these figures.",
+          fileName: selectedFile?.name || "pdf-report-data.csv",
+        });
+        return;
+      }
       setError(caught instanceof Error ? caught.message : "The CSV could not be processed.");
     }
   }
@@ -481,6 +504,15 @@ export function ReportUploadWorkflow() {
                   if (!e.target.value) return;
                   try {
                     const saved = await loadReportDraft({ data: { id: e.target.value } });
+                    if (saved.pendingImport) {
+                      const rows = reviewCsvRows(saved.csv);
+                      if (!rows) throw new Error("Saved CSV structure is invalid.");
+                      setReport(null);
+                      setPreview(null);
+                      setApproved(false);
+                      setCsvReview({ rows, error: "", fileName: saved.fileName });
+                      return;
+                    }
                     setReport(saved.report);
                     setStep(0);
                     setShowAll(false);
@@ -550,6 +582,7 @@ export function ReportUploadWorkflow() {
                 Download a sample template, replace the figures, then upload your completed file.
               </p>
             </div>
+            <NotebookReportGuide />
             <div className="report-import-grid">
               <section className="report-template-card" aria-labelledby="template-step-title">
                 <span className="report-import-step">STEP 01 · PREPARE</span>
@@ -1679,6 +1712,48 @@ export function ReportUploadWorkflow() {
           </div>
         )}
       </div>
+      {csvReview && (
+        <CsvImportReview
+          initialRows={csvReview.rows}
+          initialError={csvReview.error}
+          onClose={() => {
+            setCsvReview(null);
+            setError(
+              "Review closed. Use Save unfinished draft before closing to retain manual edits.",
+            );
+          }}
+          onSave={async (text) => {
+            const placeholder = newManualReport();
+            const rows = reviewCsvRows(text)!;
+            placeholder.projectName =
+              rows.find((row) => row[0] === "project" && row[1] === "Project name")?.[2] ||
+              "Incomplete CSV import";
+            await saveReportDraft({
+              data: {
+                report: placeholder,
+                csv: text,
+                fileName: csvReview.fileName,
+                pendingImport: true,
+              },
+            });
+          }}
+          onContinue={(text) => {
+            const parsed = parseReportCsv(text);
+            parsed.printLayoutMode = "image";
+            parsed.useRaysutReferenceLayout = false;
+            setCsvText(text);
+            setFile(new File([text], csvReview.fileName, { type: "text/csv" }));
+            setReport(parsed);
+            setPreview(null);
+            setApproved(false);
+            setShowAll(false);
+            setStep(2);
+            setFocusCsvStep(true);
+            setCsvReview(null);
+            setError("");
+          }}
+        />
+      )}
     </main>
   );
 }

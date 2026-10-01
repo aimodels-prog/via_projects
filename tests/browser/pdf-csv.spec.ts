@@ -12,6 +12,7 @@ test("upload the populated Excel template and automatically select generated PDF
   await page
     .getByLabel("Upload Excel file", { exact: true })
     .setInputFiles("public/templates/pdf-report-template.xlsx");
+  await page.getByRole("button", { name: "Check and continue", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "3. Photos & layout", exact: true }),
   ).toHaveAttribute("aria-current", "step");
@@ -42,6 +43,7 @@ test("download the PDF data-entry CSV, import an incomplete report and save for 
   await page
     .locator('input[accept="text/csv,.csv"]')
     .setInputFiles({ name: "report.csv", mimeType: "text/csv", buffer: Buffer.from(completed) });
+  await page.getByRole("button", { name: "Check and continue", exact: true }).click();
   await expect(page.getByLabel("Project name", { exact: true })).toHaveValue("CSV Road Project");
   await expect(
     page.getByRole("button", { name: "3. Photos & layout", exact: true }),
@@ -84,6 +86,7 @@ test("pasted CSV also opens Photos & layout; invalid CSV stays at import", async
   await expect(page.getByRole("navigation", { name: "Report steps" })).toHaveCount(0);
   await input.fill(PDF_REPORT_CSV_TEMPLATE);
   await page.getByRole("button", { name: "Validate pasted CSV", exact: true }).click();
+  await page.getByRole("button", { name: "Check and continue", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "3. Photos & layout", exact: true }),
   ).toHaveAttribute("aria-current", "step");

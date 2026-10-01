@@ -18,6 +18,7 @@ test("one layout upload replaces road controls and is shown in the PDF preview",
       ),
     );
   await page.getByRole("button", { name: "Validate pasted CSV", exact: true }).click();
+  await page.getByRole("button", { name: "Check and continue", exact: true }).click();
   await expect(page.getByText("Road drawing options (optional)", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Use the Raysut drawing", { exact: true })).toHaveCount(0);
   await page.getByLabel("Project map image", { exact: true }).setInputFiles("Dashboard/Photo1.jpg");

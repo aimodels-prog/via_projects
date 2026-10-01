@@ -11,6 +11,7 @@ const schema = z.object({
   report: draftReportSchema,
   csv: z.string().max(2_000_000),
   fileName: z.string().max(200),
+  pendingImport: z.boolean().optional(),
 });
 export const saveReportDraft = createServerFn({ method: "POST" })
   .validator((input: unknown) => schema.parse(input))
